@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour
 {
-    [Header("Map Settings")] public int mapSize = 10;
+    [Header("Map Settings")] 
+    public int mapSize = 10;
     public Tilemap groundTilemap;
-    public float biomeScale = 0.1f;
 
     [Header("Category 1: Base Tiles (Ground)")]
     public TileBase[] baseTiles;
@@ -15,6 +16,10 @@ public class MapGenerator : MonoBehaviour
 
     [Range(0f, 1f)] public float resourceSpawnChance = 0.15f;
 
+    private bool[,] obstacleGrid;
+    
+    private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
+
     void Start()
     {
         GenerateFullMap();
@@ -23,6 +28,9 @@ public class MapGenerator : MonoBehaviour
     public void GenerateFullMap()
     {
         int halfSize = mapSize / 2;
+        
+        obstacleGrid = new bool[mapSize, mapSize];
+        obstacleCoordinates.Clear();
 
         float seedX = Random.Range(0f, 10000f);
         float seedY = Random.Range(0f, 10000f);
@@ -32,11 +40,14 @@ public class MapGenerator : MonoBehaviour
             for (int y = -halfSize; y < halfSize; y++)
             {
                 Vector3Int gridPosition = new Vector3Int(x, y, 0);
+                
+                int arrayX = x + halfSize;
+                int arrayY = y + halfSize;
 
                 if (baseTiles != null && baseTiles.Length > 0)
                 {
-                    float pX = (x + seedX) * biomeScale;
-                    float pY = (y + seedY) * biomeScale;
+                    float pX = (x + seedX);
+                    float pY = (y + seedY);
                     float noiseValue = Mathf.PerlinNoise(pX, pY);
 
                     int tileIndex = 0;
@@ -51,6 +62,7 @@ public class MapGenerator : MonoBehaviour
 
                 if (x == 0 && y == 0)
                 {
+                    obstacleGrid[arrayX, arrayY] = false;
                     continue;
                 }
 
@@ -59,8 +71,38 @@ public class MapGenerator : MonoBehaviour
                     GameObject randomResource = resourcePrefabs[Random.Range(0, resourcePrefabs.Length)];
                     Vector3 spawnPos = groundTilemap.GetCellCenterWorld(gridPosition);
                     Instantiate(randomResource, spawnPos, Quaternion.identity, transform);
+                    
+                    obstacleGrid[arrayX, arrayY] = true;
+                    obstacleCoordinates.Add(new Vector2Int(x, y));
+                }
+                else
+                {
+                    obstacleGrid[arrayX, arrayY] = false;
                 }
             }
+        }
+    }
+    
+    public bool[,] GetObstacleGrid()
+    {
+        return obstacleGrid;
+    }
+
+
+    public List<Vector2Int> GetObstacleCoordinates()
+    {
+        return obstacleCoordinates;
+    }
+    
+    public void RemoveObstacleAt(Vector2Int worldGridPosition)
+    {
+        int arrayX = worldGridPosition.x + (mapSize / 2);
+        int arrayY = worldGridPosition.y + (mapSize / 2);
+
+        if (arrayX >= 0 && arrayX < mapSize && arrayY >= 0 && arrayY < mapSize)
+        {
+            obstacleGrid[arrayX, arrayY] = false;
+            obstacleCoordinates.Remove(worldGridPosition);
         }
     }
 }

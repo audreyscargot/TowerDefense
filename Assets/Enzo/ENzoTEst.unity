@@ -149,14 +149,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89b343020f9ccee488673b654c34563a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
-  mapSize: 10
+  mapSize: 25
   groundTilemap: {fileID: 707563213}
-  biomeScale: 0.1
   baseTiles:
-  - {fileID: 11400000, guid: f1b748ea58499ae4288f5fd5a65e6436, type: 2}
+  - {fileID: 11400000, guid: b8ed86b0703098e4c835a118497324e2, type: 2}
+  - {fileID: 11400000, guid: 2320e5f7197888242877802ed9b583b9, type: 2}
+  - {fileID: 11400000, guid: 02633525ba829d348b5554929be7c449, type: 2}
+  - {fileID: 11400000, guid: f0a5a9742a361424c901fcc9e8c19646, type: 2}
+  - {fileID: 11400000, guid: b7cc96f6700347d4ea60ba84bdf22a98, type: 2}
+  - {fileID: 11400000, guid: 10d155ed18907cf40bb4cbebafeb3d39, type: 2}
+  - {fileID: 11400000, guid: 26439b16d34843d42af86c1e9644d0be, type: 2}
+  - {fileID: 11400000, guid: bb6e330741a72c34fa12216e03b814c4, type: 2}
+  - {fileID: 11400000, guid: b751dcda39230304289a38d1d5bf3621, type: 2}
   resourcePrefabs:
   - {fileID: 2622882233913715950, guid: ec47fb64d2e2df3449c530c4a8c4ef56, type: 3}
-  resourceSpawnChance: 0.15
+  resourceSpawnChance: 0.009
 --- !u!156049354 &480386628
 Grid:
   m_ObjectHideFlags: 0
@@ -165,7 +172,7 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 480386626}
   m_Enabled: 1
-  m_CellSize: {x: 0.3, y: 0.3, z: 0}
+  m_CellSize: {x: 1, y: 1, z: 0}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
