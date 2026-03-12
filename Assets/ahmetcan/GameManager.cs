@@ -1,12 +1,18 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
+    
+    //References
+    public GameObject Player;
+    private PlayerLightHandler PlayerLightHandler;
+    
     //General Variables
     private float Days = 1; // counting days for score panel
-    private float NightStep = 10; // after how much step the night gonna end
-    private float DayStep = 10; // after how much step the day gonna end
+    private float NightStep = 0; // after how much step the night gonna end
+    private float DayStep = 0; // after how much step the day gonna end
     
     //function variables
     private float DayNightCounter = 0;
@@ -21,6 +27,12 @@ public class GameManager : MonoBehaviour
     
     public Volume ppv;  // getting the volume
 
+    private void Start()
+    {
+        PlayerLightHandler = Player.GetComponent<PlayerLightHandler>();
+        PlayerMoved();
+    }
+
     //DayNight Tween
     public void StartTween(float newStart,float newTarget, float newDuration)
     {
@@ -32,18 +44,22 @@ public class GameManager : MonoBehaviour
     }
 
     // player moved 1 time
-    void PlayerMoved()
+   public void PlayerMoved()
     {
         if (!TimelineAnimating) {
-        DayNightCounter += 1;
-        if (Day &&  DayNightCounter >= DayStep) {
-            Day = false;
-            StartTween(0f,1f,5f);
-        } else if (!Day &&  DayNightCounter >= NightStep) {
-            Days += 1;
-            Day = true;
-            StartTween(1f,0f,5f);
-        } 
+            DayNightCounter += 1;
+            if (Day &&  DayNightCounter >= DayStep) {
+                Day = false;
+                PlayerLightHandler.ActivateLight();
+                StartTween(0f,1f,5f);
+                DayNightCounter = 0;
+            } else if (!Day &&  DayNightCounter >= NightStep) {
+                Days += 1;
+                Day = true;
+                PlayerLightHandler.DeactivateLight();
+                StartTween(1f,0f,5f);
+                DayNightCounter = 0;
+            } 
         }
     }
 
