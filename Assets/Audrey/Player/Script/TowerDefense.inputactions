@@ -25,9 +25,33 @@
                     "initialStateCheck": false
                 },
                 {
+<<<<<<< Updated upstream
                     "name": "CameraSwitch",
                     "type": "Button",
                     "id": "ded70d70-7890-4199-ba78-c154b44ec9d9",
+=======
+                    "name": "Build",
+                    "type": "Button",
+                    "id": "32ed206f-e6fe-439a-8441-e8f90a0f0494",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pointer Position",
+                    "type": "Value",
+                    "id": "a3d21f6b-e395-4450-a9f6-444966558909",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightClick",
+                    "type": "Button",
+                    "id": "61de0b8c-8e7f-4708-9fe0-cf98382c0a71",
+>>>>>>> Stashed changes
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -224,12 +248,43 @@
                 },
                 {
                     "name": "",
+<<<<<<< Updated upstream
                     "id": "9a43073f-fcc6-4329-8374-35595882aab9",
                     "path": "<Keyboard>/tab",
                     "interactions": "Press(pressPoint=1.401298E-45)",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "CameraSwitch",
+=======
+                    "id": "704675f6-758d-4b27-aad3-b0fb44253b76",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Build",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "61aa415e-9643-4886-98b8-3af4ad8af962",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pointer Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2db9864-0c21-46cb-97b7-245bf78704e6",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RightClick",
+>>>>>>> Stashed changes
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
