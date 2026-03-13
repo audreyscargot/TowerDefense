@@ -352,7 +352,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3905731002155939807, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: attackRange
-      value: 200
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3905731002155939807, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: rotationSpeed
@@ -360,7 +360,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3905731002155939807, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: layerMask.m_Bits
-      value: 247
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: m_Name

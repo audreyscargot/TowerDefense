@@ -53,7 +53,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canAttack)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, attackRange, layerMask);
+            // RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, attackRange, layerMask);
+            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.5f, transform.up, attackRange, layerMask);
+            Debug.Log(hit ? hit.collider.gameObject : null);
             EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
             if (hitEnemy)
             {
