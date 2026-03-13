@@ -1,19 +1,23 @@
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 3f;
     private Rigidbody2D m_rigidBody;
     private Vector2 m_moveInput;
+    [SerializeField] private float rotationSpeed;
     
     //Attack related variables
     private bool canAttack = true;
-    [SerializeField] private float attackRange = 1.0f;
-    private LayerMask layerMask;
+    [SerializeField] private float attackRange = 2.0f;
+    public LayerMask layerMask;
 
     public float attackCooldown = 0.5f;
-    public float damage = 1.0f;
+    public float damage = 2.0f;
     
     void Start()
     {
@@ -24,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         m_rigidBody.linearVelocity = m_moveInput * moveSpeed;
+        RotateInDirection();
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -31,19 +36,32 @@ public class PlayerMovement : MonoBehaviour
         m_moveInput = context.ReadValue<Vector2>();
     }
 
+    private void RotateInDirection()
+    {
+        if (m_moveInput != Vector2.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(transform.forward, m_moveInput);
+            Quaternion rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            
+            m_rigidBody.MoveRotation(rotation);
+        }
+    }
+    
+    
     //Attack function
     public void Attack(InputAction.CallbackContext context)
     {
         if (canAttack)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.forward, attackRange, layerMask);
-            EnemyAI hitEnemy = hit.collider.gameObject.GetComponent<EnemyAI>();
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, attackRange, layerMask);
+            EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
             if (hitEnemy)
             {
                 hitEnemy.TakeDamage(damage);
-                canAttack =  false;
-                Invoke("ResetAttack", attackCooldown);
+                
             }
+            canAttack =  false;
+            Invoke("ResetAttack", attackCooldown);
         }
     }
 

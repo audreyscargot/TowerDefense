@@ -55,18 +55,40 @@ public class EnemyAI : MonoBehaviour
 
     void Attack()
     {
+        // Le code tout caca d'enzo parce qu'il veut pas mettre le player health 
         if (canAttack)
         {
-            RaycastHit2D ray = Physics2D.Raycast(transform.position, target.transform.position - transform.position, rangeOfAttack, enemyLayerMask);
-            GameObject hit = ray.collider.gameObject;
-            PlayerHealth hitHealth = hit ? hit.GetComponent<PlayerHealth>() : null;
-            if (hitHealth != null)
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.transform.position - transform.position, rangeOfAttack, enemyLayerMask);
+
+            if (hit.collider != null)
             {
-                hitHealth.ChangeHealth(-damage);
+                GameObject hitObject = hit.collider.gameObject;
+
+                PlayerHealth pHealth = hitObject.GetComponent<PlayerHealth>();
+                if (pHealth != null) pHealth.ChangeHealth(-damage);
+                
+                // Barrier barrier = hitObject.GetComponent<Barrier>();
+                // if (barrier != null) barrier.TakeDamage(damage);
             }
+
             canAttack = false;
-            Invoke("ResetAttack",attackCooldown);
+            Invoke("ResetAttack", attackCooldown);
         }
+        
+        //Le bon code
+        
+        // if (canAttack)
+        // {
+        //     RaycastHit2D ray = Physics2D.Raycast(transform.position, target.transform.position - transform.position, rangeOfAttack, enemyLayerMask);
+        //     GameObject hit = ray.collider.gameObject;
+        //     PlayerHealth hitHealth = hit ? hit.GetComponent<PlayerHealth>() : null;
+        //     if (hitHealth != null)
+        //     {
+        //         hitHealth.ChangeHealth(-damage);
+        //     }
+        //     canAttack = false;
+        //     Invoke("ResetAttack",attackCooldown);
+        // }
     }
 
     void ResetAttack()
@@ -84,6 +106,7 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(float amount)
     {
         health -= amount;
+        Debug.Log(health);
         if (health <= 0)
         {
             //Drop XP ?
