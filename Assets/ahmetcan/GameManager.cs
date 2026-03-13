@@ -4,7 +4,8 @@ using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
-    
+    //Settings
+    private float PlayerLightIntensity = 50;
     //References
     public GameObject Player;
     private PlayerLightHandler PlayerLightHandler;
@@ -24,7 +25,7 @@ public class GameManager : MonoBehaviour
     float TimelineDuration;
     float TimelineTime;
     bool TimelineAnimating;
-    
+    bool TimelinePlayerLightPoint;
     public Volume ppv;  // getting the volume
 
     private void Start()
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
         TimelineDuration = newDuration;
         TimelineTime = 0;
         TimelineAnimating = true;
+        TimelinePlayerLightPoint = true;
     }
 
     // player moved 1 time
@@ -50,13 +52,11 @@ public class GameManager : MonoBehaviour
             DayNightCounter += 1;
             if (Day &&  DayNightCounter >= DayStep) {
                 Day = false;
-                PlayerLightHandler.ActivateLight();
                 StartTween(0f,1f,5f);
                 DayNightCounter = 0;
             } else if (!Day &&  DayNightCounter >= NightStep) {
                 Days += 1;
                 Day = true;
-                PlayerLightHandler.DeactivateLight();
                 StartTween(1f,0f,5f);
                 DayNightCounter = 0;
             } 
@@ -72,8 +72,18 @@ public class GameManager : MonoBehaviour
         if (ppv)
         {
             ppv.weight = Mathf.Lerp(TimelineStart, TimelineTarget, t);
+            if (t >= 0.6f && TimelinePlayerLightPoint)
+            {
+                TimelinePlayerLightPoint = false;
+                Debug.Log("started player lightning");
+                // Activating/Deactivating player light
+                if (Day) PlayerLightHandler.StartTweenPlayer(PlayerLightIntensity, 0f, 2f);
+                else PlayerLightHandler.StartTweenPlayer(0f, PlayerLightIntensity, 3f);
+            }
+
             if (t >= 1f)
             {
+                // stoping the timeline
                 ppv.weight = TimelineTarget;
                 TimelineAnimating = false;
             }

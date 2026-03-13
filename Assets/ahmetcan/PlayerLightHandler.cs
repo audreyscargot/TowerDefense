@@ -7,8 +7,6 @@ using Component = System.ComponentModel.Component;
 
 public class PlayerLightHandler : MonoBehaviour
 {
-    //Settings
-    private float LightIntensity = 50;
     //References
     private Light2D Spotlight;
     
@@ -24,7 +22,7 @@ public class PlayerLightHandler : MonoBehaviour
         Spotlight = GetComponent<Light2D>();
     }
     //Tween
-    public void StartTween(float newStart,float newTarget, float newDuration)
+    public void StartTweenPlayer(float newStart,float newTarget, float newDuration)
     {
         TimelineStart = newStart;
         TimelineTarget = newTarget;
@@ -32,9 +30,6 @@ public class PlayerLightHandler : MonoBehaviour
         TimelineTime = 0;
         TimelineAnimatin = true;
     }
-    // Activate/Deactivate Light
-   public void ActivateLight() {StartTween(0f,LightIntensity,2f);}
-   public void DeactivateLight() {StartTween(LightIntensity,0,2f);}
     
     // Event Tick
     void Update()

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2270249190579483690}
   - component: {fileID: 7490871815219215533}
   - component: {fileID: 895563656438835538}
+  - component: {fileID: 8086899713424705898}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -337,3 +338,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e2d8a592d042d24bb3276a301fb5aee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLightHandler
+--- !u!114 &8086899713424705898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4182699795041694585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ea2e87272a81245ba946dee7d46559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionPlayer
