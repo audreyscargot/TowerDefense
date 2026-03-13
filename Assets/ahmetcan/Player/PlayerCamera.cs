@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public InputActionReference ChangeCV;
+    public InputActionReference SwitchInput;
     private bool Switched = false;
 
     public GameObject CamObj;
@@ -34,19 +34,20 @@ public class PlayerCamera : MonoBehaviour
 
     private void OnEnable()
     {
-        ChangeCV.action.performed += OnPressed;
-        ChangeCV.action.Enable();
+        SwitchInput.action.performed += OnPressed;
+        SwitchInput.action.Enable();
     }
 
     private void OnDisable()
     {
-        ChangeCV.action.performed -= OnPressed;
-        ChangeCV.action.Disable();
+        SwitchInput.action.performed -= OnPressed;
+        SwitchInput.action.Disable();
     }
 
     private void OnPressed(InputAction.CallbackContext context)
     {
-        if (Switched) StartTween(5f, 10f, 1f);
+        if (TimelineAnimating) return;
+        if (Switched) StartTween(10f, 5f, 1f);
         else StartTween(5f, 10f, 1f);
     }
 
@@ -64,6 +65,8 @@ public class PlayerCamera : MonoBehaviour
                 // stoping the timeline
                 cam.orthographicSize = TimelineTarget;
                 TimelineAnimating = false;
+                if (Switched) Switched = false;
+                else Switched = true;
             }
         }
     }

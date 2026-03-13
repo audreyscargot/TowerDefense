@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &22318516 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
-  m_PrefabInstance: {fileID: 1792302648}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &71700905
 GameObject:
   m_ObjectHideFlags: 0
@@ -3198,6 +3193,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5590180322323784399, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
+      propertyPath: CamObj
+      value: 
+      objectReference: {fileID: 1075737597}
     - target: {fileID: 6169445882499319521, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: m_LocalScale.x
       value: 6.8336
@@ -3260,29 +3259,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6169445882499319521, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1075737600}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1792302659}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
 --- !u!4 &1792302649 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6169445882499319521, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
   m_PrefabInstance: {fileID: 1792302648}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1792302659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22318516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f52d1e5345c395641b482217c8804ff9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.CameraSwitcher
-  m_Cameras: []
 --- !u!1 &1793895589
 GameObject:
   m_ObjectHideFlags: 0

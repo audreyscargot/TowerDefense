@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 895563656438835538}
   - component: {fileID: 8086899713424705898}
   - component: {fileID: 9222122608650630997}
+  - component: {fileID: 5590180322323784399}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -223,6 +224,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 76fc874c-c41a-4363-8236-1bb71803a3fa
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ded70d70-7890-4199-ba78-c154b44ec9d9
+    m_ActionName: 'Player/CameraSwitch[/Keyboard/e]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -366,6 +371,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ea2e87272a81245ba946dee7d46559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionPlayer
+  InteractAction: {fileID: 0}
+  InteractionObjScript: {fileID: 0}
 --- !u!114 &9222122608650630997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,3 +387,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 10
   currentHealth: 0
+--- !u!114 &5590180322323784399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4182699795041694585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0b1b1bd0d95574f8f720f2ea281b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
+  SwitchInput: {fileID: -2739589644003106764, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
+  CamObj: {fileID: 0}
+  TimelineAnimating: 0
