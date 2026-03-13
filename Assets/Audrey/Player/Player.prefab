@@ -17,7 +17,8 @@ GameObject:
   - component: {fileID: 7490871815219215533}
   - component: {fileID: 895563656438835538}
   - component: {fileID: 8086899713424705898}
-  m_Layer: 0
+  - component: {fileID: 9222122608650630997}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +168,19 @@ MonoBehaviour:
     m_ActionId: 73986660-0253-4747-a6f3-92e41ab56ac1
     m_ActionName: 'Player/Move[/Keyboard/z,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/q,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3905731002155939807}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Attack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: e15eba07-baf0-4ab1-ba7a-d2b0625772ec
     m_ActionName: 'Player/Fire[/Mouse/leftButton]'
   - m_PersistentCalls:
@@ -228,6 +241,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   moveSpeed: 1
+  attackRange: 1
+  attackCooldown: 0.5
+  damage: 1
 --- !u!61 &2270249190579483690
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -350,3 +366,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ea2e87272a81245ba946dee7d46559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionPlayer
+--- !u!114 &9222122608650630997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4182699795041694585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 801c37d5e111a45448aa60665fa23154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 10
+  currentHealth: 0
