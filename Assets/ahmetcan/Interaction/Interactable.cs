@@ -5,14 +5,14 @@ public class Interactable : MonoBehaviour
 {
     //SETINGS
     public bool AnimatedIcon = false;
-    public Vector2 IconOffset = new Vector2(0,0);
-    
+    public Vector2 IconOffset = new Vector2(0, 0);
+
     // REFERENCES
-    private InteractionPlayer InteractionPlayer;
+    protected InteractionPlayer InteractionPlayer;
     public GameObject GameManagerObj;
     protected GameManager GameManager;
-    private GameObject spawnedObject;
-    private GameObject SpawnPrefab;
+    protected GameObject spawnedObject;
+    protected GameObject SpawnPrefab;
 
     private void Start()
     {
@@ -20,6 +20,7 @@ public class Interactable : MonoBehaviour
         if (AnimatedIcon) SpawnPrefab = GameManager.InteractIconAnimated;
         else SpawnPrefab = GameManager.InteractIconNormal;
     }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {

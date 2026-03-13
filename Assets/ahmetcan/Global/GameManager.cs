@@ -6,28 +6,31 @@ public class GameManager : MonoBehaviour
 {
     //Settings
     private float PlayerLightIntensity = 50;
+
     //References
     public GameObject Player;
     private PlayerLightHandler PlayerLightHandler;
     public GameObject InteractIconNormal;
+
     public GameObject InteractIconAnimated;
+
     //General Variables
     private float Days = 1; // counting days for score panel
     private float NightStep = 0; // after how much step the night gonna end
     private float DayStep = 0; // after how much step the day gonna end
-    
+
     //function variables
     private float DayNightCounter = 0;
     private bool Day = true;
-    
+
     //timeline
     float TimelineStart;
     float TimelineTarget;
     float TimelineDuration;
     float TimelineTime;
-    bool TimelineAnimating;
+    public bool TimelineAnimating;
     bool TimelinePlayerLightPoint;
-    public Volume ppv;  // getting the volume
+    public Volume ppv; // getting the volume
 
     private void Start()
     {
@@ -35,7 +38,7 @@ public class GameManager : MonoBehaviour
     }
 
     //DayNight Tween
-    public void StartTween(float newStart,float newTarget, float newDuration)
+    public void StartTween(float newStart, float newTarget, float newDuration)
     {
         TimelineStart = newStart;
         TimelineTarget = newTarget;
@@ -46,21 +49,25 @@ public class GameManager : MonoBehaviour
     }
 
     // player moved 1 time
-   public void PlayerMoved()
+    public void PlayerMoved()
     {
-        if (!TimelineAnimating) {
+        if (!TimelineAnimating)
+        {
             DayNightCounter += 1;
-            if (Day &&  DayNightCounter >= DayStep) {
+            if (Day && DayNightCounter >= DayStep)
+            {
                 Day = false;
-                StartTween(0f,1f,5f);
+                StartTween(0f, 1f, 5f);
                 DayNightCounter = 0;
-            } else if (!Day &&  DayNightCounter >= NightStep) {
+            }
+            else if (!Day && DayNightCounter >= NightStep)
+            {
                 Days += 1;
                 Day = true;
-                StartTween(1f,0f,5f);
+                StartTween(1f, 0f, 5f);
                 DayNightCounter = 0;
                 PlayerLightHandler.StartTweenPlayer(PlayerLightIntensity, 0f, 3f);
-            } 
+            }
         }
     }
 
@@ -77,7 +84,7 @@ public class GameManager : MonoBehaviour
             {
                 TimelinePlayerLightPoint = false;
                 // Activating/Deactivating player light
-                 PlayerLightHandler.StartTweenPlayer(0f, PlayerLightIntensity, 3f);
+                PlayerLightHandler.StartTweenPlayer(0f, PlayerLightIntensity, 3f);
             }
 
             if (t >= 1f)
