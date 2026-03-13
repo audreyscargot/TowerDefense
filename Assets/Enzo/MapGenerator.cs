@@ -81,6 +81,8 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+        
+        
     }
     
     public bool[,] GetObstacleGrid()
