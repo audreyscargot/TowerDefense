@@ -402,10 +402,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   maxBuildDistance: 5
-  toggleBuildModeAction: {fileID: 7271604281940290689, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
+  gridSize: 0.5
+  toggleBuildModeAction: {fileID: -1240972220466220524, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   leftClickAction: {fileID: 9071221205332750187, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   rightClickAction: {fileID: -2785724328919916222, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   pointerPositionAction: {fileID: -678683635776340534, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
+  rotateAction: {fileID: -4686617923810901034, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
 --- !u!4 &1363375852
 Transform:
   m_ObjectHideFlags: 0
@@ -496,16 +498,24 @@ MonoBehaviour:
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 32ed206f-e6fe-439a-8441-e8f90a0f0494
-    m_ActionName: 'Player/Build[/Keyboard/b]'
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: a3d21f6b-e395-4450-a9f6-444966558909
     m_ActionName: 'Player/Pointer Position[/Mouse/position]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 61de0b8c-8e7f-4708-9fe0-cf98382c0a71
     m_ActionName: 'Player/RightClick[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ded70d70-7890-4199-ba78-c154b44ec9d9
+    m_ActionName: 'Player/CameraSwitch[/Keyboard/tab]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6f458de6-6711-4314-b800-7fc3c4f9de83
+    m_ActionName: 'Player/Rotate[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c2de5f79-416e-435b-be09-ece27a8d7707
+    m_ActionName: 'Player/BuildingMode[/Keyboard/b]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

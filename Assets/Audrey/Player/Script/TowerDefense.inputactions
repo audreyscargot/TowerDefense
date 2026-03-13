@@ -25,14 +25,9 @@
                     "initialStateCheck": false
                 },
                 {
-<<<<<<< Updated upstream
                     "name": "CameraSwitch",
                     "type": "Button",
                     "id": "ded70d70-7890-4199-ba78-c154b44ec9d9",
-=======
-                    "name": "Build",
-                    "type": "Button",
-                    "id": "32ed206f-e6fe-439a-8441-e8f90a0f0494",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -51,7 +46,24 @@
                     "name": "RightClick",
                     "type": "Button",
                     "id": "61de0b8c-8e7f-4708-9fe0-cf98382c0a71",
->>>>>>> Stashed changes
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Button",
+                    "id": "6f458de6-6711-4314-b800-7fc3c4f9de83",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BuildingMode",
+                    "type": "Button",
+                    "id": "c2de5f79-416e-435b-be09-ece27a8d7707",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -248,20 +260,12 @@
                 },
                 {
                     "name": "",
-<<<<<<< Updated upstream
                     "id": "9a43073f-fcc6-4329-8374-35595882aab9",
                     "path": "<Keyboard>/tab",
                     "interactions": "Press(pressPoint=1.401298E-45)",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "CameraSwitch",
-=======
-                    "id": "704675f6-758d-4b27-aad3-b0fb44253b76",
-                    "path": "<Keyboard>/b",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Build",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -284,7 +288,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "RightClick",
->>>>>>> Stashed changes
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bfe69f8a-fe2a-48fd-9f5c-f0433a1310a6",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b084375-55d6-4153-93fd-8518968a012f",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildingMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
