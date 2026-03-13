@@ -403,6 +403,7 @@ MonoBehaviour:
     m_Bits: 256
   maxBuildDistance: 5
   gridSize: 0.5
+  groundTilemap: {fileID: 707563213}
   toggleBuildModeAction: {fileID: -1240972220466220524, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   leftClickAction: {fileID: 9071221205332750187, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   rightClickAction: {fileID: -2785724328919916222, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
