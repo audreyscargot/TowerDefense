@@ -3,7 +3,7 @@ using UnityEngine;
 public class ResourceNode : MonoBehaviour
 {
     [Header("Resource Settings")]
-    public int maxHealth = 3;            
+    public float maxHealth = 3;            
     public GameObject dropItemPrefab;    
     public int minDropAmount = 1;
     public int maxDropAmount = 3;
@@ -13,7 +13,7 @@ public class ResourceNode : MonoBehaviour
     public Color hitFlashColor = Color.red;
     private Color originalColor;
 
-    private int currentHealth;
+    private float currentHealth;
 
     private void Start()
     {
@@ -25,7 +25,7 @@ public class ResourceNode : MonoBehaviour
     }
 
     // Call this function from your Player script when they attack/click it
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
 

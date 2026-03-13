@@ -1,4 +1,5 @@
 using System.Numerics;
+using Audrey.Player.Script;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Quaternion = UnityEngine.Quaternion;
@@ -53,14 +54,20 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canAttack)
         {
-            // RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, attackRange, layerMask);
             RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.5f, transform.up, attackRange, layerMask);
-            Debug.Log(hit ? hit.collider.gameObject : null);
             EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
             if (hitEnemy)
             {
                 hitEnemy.TakeDamage(damage);
                 
+            }
+            
+            
+            //à modifier avec une health en commun parce que c'est n'imp là
+           ResourceNode resourceNode = hit ? hit.collider.gameObject.GetComponent<ResourceNode>() : null;
+            if (resourceNode)
+            {
+                resourceNode.TakeDamage(damage);
             }
             canAttack =  false;
             Invoke("ResetAttack", attackCooldown);

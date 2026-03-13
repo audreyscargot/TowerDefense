@@ -1,3 +1,4 @@
+using Audrey.Player.Script;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,7 +22,8 @@ public class EnemyAI : MonoBehaviour
 
     private float attackCooldown = 1.0f;
     private float tick;
-
+    
+    
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -106,6 +108,10 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(float amount)
     {
         health -= amount;
+        canAttack = false;
+        Invoke("ResetAttack", 1.0f);
+        
+
         Debug.Log(health);
         if (health <= 0)
         {

@@ -1,23 +1,25 @@
 using UnityEngine;
-
-public class PlayerHealth : MonoBehaviour
+namespace Audrey.Player.Script
 {
-    public float maxHealth;
-    public float currentHealth;
+    public class PlayerHealth : MonoBehaviour
+    {
+        public float maxHealth;
+        public float currentHealth;
     
-    void Start()
-    {
-        currentHealth = maxHealth;
-    }
-
-    public void ChangeHealth(float amount)
-    {
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
-        Debug.Log(currentHealth);
-        if (currentHealth <= 0)
+        void Start()
         {
-            //GameManager game over
-            Debug.Log("DEAD");
+            currentHealth = maxHealth;
+        }
+
+        public virtual void ChangeHealth(float amount)
+        {
+            currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+            Debug.Log(currentHealth);
+            if (currentHealth <= 0)
+            {
+                //GameManager game over
+                Debug.Log("DEAD");
+            }
         }
     }
 }
