@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +9,7 @@ public class PlayerCamera : MonoBehaviour
     private bool Switched = false;
 
     public GameObject CamObj;
-    private Camera cam;
+    private CinemachineCamera cam;
 
     //timeline
     float TimelineStart;
@@ -17,8 +18,6 @@ public class PlayerCamera : MonoBehaviour
     float TimelineTime;
     public bool TimelineAnimating;
 
-    public float NormalZoom = 5f;
-    public float BigZoom = 10f;
     //Tween
     public void StartTween(float newStart, float newTarget, float newDuration)
     {
@@ -31,7 +30,7 @@ public class PlayerCamera : MonoBehaviour
 
     private void Start()
     {
-        cam = CamObj.GetComponent<Camera>();
+        cam = CamObj.GetComponent<CinemachineCamera>();
     }
 
     private void OnEnable()
@@ -49,8 +48,8 @@ public class PlayerCamera : MonoBehaviour
     private void OnPressed(InputAction.CallbackContext context)
     {
         if (TimelineAnimating) return;
-        if (Switched) StartTween(BigZoom, NormalZoom, 1f);
-        else StartTween(NormalZoom, BigZoom, 1f);
+        if (Switched) StartTween(2f, 2f, 1f);
+        else StartTween(2f, 5f, 1f);
     }
 
     void Update()
@@ -61,11 +60,11 @@ public class PlayerCamera : MonoBehaviour
         float t = TimelineTime / TimelineDuration;
         if (cam)
         {
-            cam.orthographicSize = Mathf.Lerp(TimelineStart, TimelineTarget, t);
+            cam.Lens.OrthographicSize = Mathf.Lerp(TimelineStart, TimelineTarget, t);
             if (t >= 1f)
             {
                 // stoping the timeline
-                cam.orthographicSize = TimelineTarget;
+                cam.Lens.OrthographicSize = TimelineTarget;
                 TimelineAnimating = false;
                 if (Switched) Switched = false;
                 else Switched = true;

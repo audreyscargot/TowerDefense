@@ -1,5 +1,3 @@
-using System.Numerics;
-using Audrey.Player.Script;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Quaternion = UnityEngine.Quaternion;
@@ -19,13 +17,21 @@ public class PlayerMovement : MonoBehaviour
 
     public float attackCooldown = 0.5f;
     public float damage = 2.0f;
+
+    private Animator anim;
+    private Vector2 lastMoveDirection;
     
     void Start()
     {
+        anim = GetComponent<Animator>();
         m_rigidBody = GetComponent<Rigidbody2D>();
     }
-    
-    
+
+    void Update()
+    {
+        ProcessInput();
+        Animate();
+    }
     void FixedUpdate()
     {
         m_rigidBody.linearVelocity = m_moveInput * moveSpeed;
@@ -47,7 +53,26 @@ public class PlayerMovement : MonoBehaviour
             m_rigidBody.MoveRotation(rotation);
         }
     }
-    
+
+    void ProcessInput()
+    {
+        float moveX = m_moveInput.x;
+        float moveY = m_moveInput.y;
+
+        if ((moveX == 0 && moveY == 0) || (moveX != 0 && moveY != 0))
+        {
+            lastMoveDirection = m_moveInput;
+        }
+    }
+
+    void Animate()
+    {
+        anim.SetFloat("MoveX", m_moveInput.x);
+        anim.SetFloat("MoveY", m_moveInput.y);
+        anim.SetFloat("MoveMagnitude", m_moveInput.magnitude);
+        anim.SetFloat("lastMoveX", lastMoveDirection.x);
+        anim.SetFloat("lastMoveY", lastMoveDirection.y);
+    }
     
     //Attack function
     public void Attack(InputAction.CallbackContext context)
