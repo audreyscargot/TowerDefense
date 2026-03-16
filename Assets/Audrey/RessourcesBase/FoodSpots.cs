@@ -1,27 +1,41 @@
 using UnityEngine;
 
-public class FoodSpots : MonoBehaviour
+public class FoodSpots : Interactable
 {
-    bool isOccupied = false;
+    bool isHarvestable = true;
     private int daysToGrow;
-    private int currentDay;
-    //
+    private int currentDay = 0;
+
+    public Sprite[] plantDays;
+
+    public SpriteRenderer currentSprite;
     
-    void Plant(int  days)
+    public GameObject dropItemPrefab;
+    public int dropCount;
+    
+    void Grow()
     {
-        if (!isOccupied)
+        currentDay++;
+        currentSprite.sprite = plantDays[currentDay];
+        if (currentDay >= daysToGrow)
         {
-            isOccupied = true;
-            daysToGrow = days;
-            if (currentDay >= daysToGrow)
-            {
-                createResources();
-            }
+            isHarvestable = true;
         }
     }
-    
-    void createResources()
+
+    public override void Action()
     {
-        isOccupied = false;
+        if (isHarvestable)
+        {
+            if (dropItemPrefab != null)
+            {
+                for (int i = 0; i < dropCount; i++)
+                {
+                    Vector3 randomOffset = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f,0.5f), 0);
+                    Instantiate(dropItemPrefab, transform.position + randomOffset, Quaternion.identity);
+                }
+            }
+            Destroy(gameObject);
+        }
     }
 }
