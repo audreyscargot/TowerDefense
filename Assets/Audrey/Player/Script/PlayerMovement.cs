@@ -58,12 +58,13 @@ public class PlayerMovement : MonoBehaviour
 
     void ProcessInput()
     {
-        float moveX = m_moveInput.x;
-        float moveY = m_moveInput.y;
-
-        if ((moveX == 0 && moveY == 0) || (moveX != 0 && moveY != 0))
+        m_moveInput.Normalize();
+        float moveX = rotateForAim.transform.up.x;
+        float moveY = rotateForAim.transform.up.y;
+        Debug.Log(moveX + " " + moveY);
+        if ((m_moveInput.x != 0 || m_moveInput.y != 0))
         {
-            lastMoveDirection = m_moveInput;
+            lastMoveDirection = m_moveInput; 
         }
     }
 
