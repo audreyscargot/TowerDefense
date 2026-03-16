@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class DayNightButton : Interactable
 {
+    public GameObject GameManagerObj;
+    public GameManager GameManager;
+    public void Start()
+    {
+        GameManager = GameManagerObj.GetComponent<GameManager>();
+    }
+
     public override void Action()
     {
         GameManager.PlayerMoved();
@@ -10,7 +17,7 @@ public class DayNightButton : Interactable
 
     private bool spriteWasVisible = false;
 
-    private void Update()
+    public override  void Update()
     {
         if (spawnedObject)
         {

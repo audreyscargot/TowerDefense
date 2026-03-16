@@ -4,56 +4,59 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     //SETINGS
-    public bool AnimatedIcon = false;
     public Vector2 IconOffset = new Vector2(0, 0);
 
     // REFERENCES
     protected InteractionPlayer InteractionPlayer;
-    public GameObject GameManagerObj;
-    protected GameManager GameManager;
     protected GameObject spawnedObject;
-    protected GameObject SpawnPrefab;
+    public GameObject SpawnPrefab;
+    protected InteractionPlayer EnteredPlayer;
 
-    private void Start()
+    
+    protected void ShowInteractButton()
     {
-        GameManager = GameManagerObj.GetComponent<GameManager>();
-        if (AnimatedIcon) SpawnPrefab = GameManager.InteractIconAnimated;
-        else SpawnPrefab = GameManager.InteractIconNormal;
+        InteractionPlayer.InteractionObjScript = this;
+        spawnedObject = Instantiate(
+            SpawnPrefab,
+            transform.position + (Vector3)IconOffset,
+            Quaternion.identity
+        );
     }
-
-
-    private void OnTriggerEnter2D(Collider2D other)
+    
+    protected void OnTriggerEnter2D(Collider2D other)
     {
         InteractionPlayer = other.GetComponent<InteractionPlayer>();
 
         if (InteractionPlayer)
         {
-            InteractionPlayer.InteractionObjScript = this;
-            if (GameManager && spawnedObject == null)
-            {
-                spawnedObject = Instantiate(
-                    SpawnPrefab,
-                    transform.position + (Vector3)IconOffset,
-                    Quaternion.identity
-                );
-            }
+            EnteredPlayer = InteractionPlayer;
+            if (InteractionPlayer.InteractionObjScript == null && spawnedObject == null)
+                ShowInteractButton();
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    protected void OnTriggerExit2D(Collider2D other)
     {
-        InteractionPlayer = other.GetComponent<InteractionPlayer>();
-
-        if (InteractionPlayer && InteractionPlayer.InteractionObjScript == this)
+        if (InteractionPlayer)
         {
-            InteractionPlayer.InteractionObjScript = null;
-
+            if (InteractionPlayer.InteractionObjScript == this)
+            { 
+                InteractionPlayer.InteractionObjScript = null;
+                InteractionPlayer = null;
+            }
+            
+            EnteredPlayer = null;
             if (spawnedObject)
             {
                 Destroy(spawnedObject);
                 spawnedObject = null;
             }
         }
+    }
+
+    public virtual void Update()
+    { 
+        if (EnteredPlayer && !InteractionPlayer.InteractionObjScript) ShowInteractButton();
     }
 
     public virtual void Action()
