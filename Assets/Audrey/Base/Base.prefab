@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -341255530190761250}
   - component: {fileID: -3250091958673171396}
   - component: {fileID: -8361469643714124690}
+  - component: {fileID: 3239307268749457626}
   m_Layer: 8
   m_Name: Base
   m_TagString: Untagged
@@ -138,11 +139,11 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.0014781952}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -152,7 +153,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.57, y: 0.36}
+  m_Size: {x: 1.5, y: 1.8104234}
   m_EdgeRadius: 0
 --- !u!114 &-8361469643714124690
 MonoBehaviour:
@@ -166,3 +167,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6fc606ac657d164aa64bffef1fabf2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Base
+--- !u!114 &3239307268749457626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4310208884456796438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65848ab88eccafe4f899f787e0cb7cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayNightButton
+  IconOffset: {x: 0, y: 0}
+  SpawnPrefab: {fileID: 6256672702632077042, guid: cb8bd43c0961ff3408fca38474bbe98b, type: 3}
+  GameManagerObj: {fileID: 3864689801975149506, guid: a4f2a4bcdc9893a48a19c4e4515306ff, type: 3}
+  GameManager: {fileID: 0}

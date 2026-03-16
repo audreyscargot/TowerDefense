@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour
 {
-    [Header("Map Settings")] 
+    public static MapGenerator Instance { get; private set; }
+
+    [Header("Map Settings")]
     public int mapSize = 10;
     public Tilemap groundTilemap;
 
@@ -15,14 +17,18 @@ public class MapGenerator : MonoBehaviour
     public GameObject[] resourcePrefabs;
     [Range(0f, 1f)] public float resourceSpawnChance = 0.15f;
 
-    public GameObject enemyPrefab;
-
     [Header("Category 3: Core Structures")]
-    public GameObject basePrefab;           
-    public GameObject aiSpawnPointPrefab;  
+    public GameObject basePrefab;
+    public GameObject aiSpawnPointPrefab;
 
     private bool[,] obstacleGrid;
     private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
@@ -31,9 +37,8 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateFullMap()
     {
-        
         int halfSize = mapSize / 2;
-        
+
         obstacleGrid = new bool[mapSize, mapSize];
         obstacleCoordinates.Clear();
 
@@ -45,26 +50,17 @@ public class MapGenerator : MonoBehaviour
             for (int y = -halfSize; y < halfSize; y++)
             {
                 Vector3Int gridPosition = new Vector3Int(x, y, 0);
-                
                 int arrayX = x + halfSize;
                 int arrayY = y + halfSize;
 
                 if (baseTiles != null && baseTiles.Length > 0)
                 {
-                    float pX = (x + seedX);
-                    float pY = (y + seedY);
-                    float noiseValue = Mathf.PerlinNoise(pX, pY);
-
-                    int tileIndex = 0;
-                    if (baseTiles.Length > 1)
-                    {
-                        tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0,
-                            baseTiles.Length - 1);
-                    }
-
+                    float noiseValue = Mathf.PerlinNoise(x + seedX, y + seedY);
+                    int tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0, baseTiles.Length - 1);
                     groundTilemap.SetTile(gridPosition, baseTiles[tileIndex]);
                 }
 
+                // Keep center clear for the base
                 if (x == 0 && y == 0)
                 {
                     obstacleGrid[arrayX, arrayY] = false;
@@ -73,10 +69,8 @@ public class MapGenerator : MonoBehaviour
 
                 if (resourcePrefabs != null && resourcePrefabs.Length > 0 && Random.value < resourceSpawnChance)
                 {
-                    GameObject randomResource = resourcePrefabs[Random.Range(0, resourcePrefabs.Length)];
                     Vector3 spawnPos = groundTilemap.GetCellCenterWorld(gridPosition);
-                    Instantiate(randomResource, spawnPos, Quaternion.identity, transform);
-                    
+                    Instantiate(resourcePrefabs[Random.Range(0, resourcePrefabs.Length)], spawnPos, Quaternion.identity, transform);
                     obstacleGrid[arrayX, arrayY] = true;
                     obstacleCoordinates.Add(new Vector2Int(x, y));
                 }
@@ -84,25 +78,37 @@ public class MapGenerator : MonoBehaviour
                 {
                     obstacleGrid[arrayX, arrayY] = false;
                 }
-                
             }
-            
         }
-        
-        
-    }
-    
-    public bool[,] GetObstacleGrid()
-    {
-        return obstacleGrid;
+
+        // Place base at map center
+        if (basePrefab != null)
+        {
+            Vector3 centerWorld = groundTilemap.GetCellCenterWorld(Vector3Int.zero);
+            Instantiate(basePrefab, centerWorld, Quaternion.identity, transform);
+        }
     }
 
-
-    public List<Vector2Int> GetObstacleCoordinates()
+    // Returns a world position snapped to a random tile on the map edge
+    public Vector3 GetRandomEdgeWorldPosition()
     {
-        return obstacleCoordinates;
+        int halfSize = mapSize / 2;
+        int x, y;
+
+        switch (Random.Range(0, 4))
+        {
+            case 0:  x = -halfSize;    y = Random.Range(-halfSize, halfSize); break; // left
+            case 1:  x = halfSize - 1; y = Random.Range(-halfSize, halfSize); break; // right
+            case 2:  x = Random.Range(-halfSize, halfSize); y = -halfSize;    break; // bottom
+            default: x = Random.Range(-halfSize, halfSize); y = halfSize - 1; break; // top
+        }
+
+        return groundTilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
     }
-    
+
+    public bool[,] GetObstacleGrid() => obstacleGrid;
+    public List<Vector2Int> GetObstacleCoordinates() => obstacleCoordinates;
+
     public void RemoveObstacleAt(Vector2Int worldGridPosition)
     {
         int arrayX = worldGridPosition.x + (mapSize / 2);
@@ -113,21 +119,5 @@ public class MapGenerator : MonoBehaviour
             obstacleGrid[arrayX, arrayY] = false;
             obstacleCoordinates.Remove(worldGridPosition);
         }
-    }
-
-    public void SpawnEnemy()
-    {
-        Debug.Log("SPAWN");
-        int enemyCount = 3;
-        for (int i = 0; i < enemyCount; i++)
-        {
-            int arrayX = Random.Range(0, mapSize/2);
-            int arrayY = Random.Range(0, mapSize/2);
-            GameObject randomEnemy = enemyPrefab;
-            Vector3 location = new Vector3(arrayX, arrayY, 0);
-            Instantiate(randomEnemy, location, Quaternion.identity, transform);
-        }
-        
-        
     }
 }

@@ -10,6 +10,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public int baseEnemiesPerNight = 3;
     public float timeBetweenSpawns = 1.0f;
+    public int spawnPointCount = 3;
 
     private GameManager gameManager;
     private List<GameObject> activeSpawnPoints = new List<GameObject>();
@@ -26,7 +27,6 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        
         GameManager.OnDayStarted += PrepareForNewDay;
         GameManager.OnNightStarted += StartNightWave;
     }
@@ -39,38 +39,36 @@ public class EnemySpawner : MonoBehaviour
 
     private void PrepareForNewDay()
     {
-        GameObject[] allSpawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
+        // Stop any wave coroutine BEFORE destroying spawn points
+        StopAllCoroutines();
+
+        foreach (GameObject sp in activeSpawnPoints)
+        {
+            if (sp != null) Destroy(sp);
+        }
         activeSpawnPoints.Clear();
 
-        if (allSpawnPoints.Length == 0)
+        if (MapGenerator.Instance == null)
         {
-            Debug.LogWarning("No spawn points found yet. The map might still be generating.");
+            Debug.LogWarning("EnemySpawner: No MapGenerator instance found.");
             return;
         }
 
-        int pointsToActivate = Random.Range(1, Mathf.Min(4, allSpawnPoints.Length + 1));
-        
-        List<GameObject> shuffledPoints = new List<GameObject>(allSpawnPoints);
-        for (int i = 0; i < shuffledPoints.Count; i++)
+        if (MapGenerator.Instance.aiSpawnPointPrefab == null)
         {
-            GameObject temp = shuffledPoints[i];
-            int randomIndex = Random.Range(i, shuffledPoints.Count);
-            shuffledPoints[i] = shuffledPoints[randomIndex];
-            shuffledPoints[randomIndex] = temp;
+            Debug.LogWarning("EnemySpawner: aiSpawnPointPrefab is not assigned on MapGenerator.");
+            return;
         }
 
-        foreach (var sp in allSpawnPoints)
+        for (int i = 0; i < spawnPointCount; i++)
         {
-            sp.GetComponent<SpriteRenderer>().enabled = false;
+            Vector3 edgePos = MapGenerator.Instance.GetRandomEdgeWorldPosition();
+            GameObject sp = Instantiate(MapGenerator.Instance.aiSpawnPointPrefab, edgePos, Quaternion.identity);
+            activeSpawnPoints.Add(sp);
         }
 
-        for (int i = 0; i < pointsToActivate; i++)
-        {
-            activeSpawnPoints.Add(shuffledPoints[i]);
-            shuffledPoints[i].GetComponent<SpriteRenderer>().enabled = true; 
-        }
+        Debug.Log($"Prepared {activeSpawnPoints.Count} spawn points for the new day.");
     }
-
 
     private void StartNightWave()
     {
@@ -88,10 +86,16 @@ public class EnemySpawner : MonoBehaviour
     {
         while (enemiesSpawnedSoFar < enemiesToSpawnThisNight)
         {
+            activeSpawnPoints.RemoveAll(sp => sp == null);
+
+            if (activeSpawnPoints.Count == 0)
+            {
+                Debug.LogWarning("All spawn points were destroyed during the wave.");
+                yield break;
+            }
+
             Transform randomPoint = activeSpawnPoints[Random.Range(0, activeSpawnPoints.Count)].transform;
-            
             Instantiate(enemyPrefab, randomPoint.position, Quaternion.identity);
-            
             enemiesAlive++;
             enemiesSpawnedSoFar++;
 
