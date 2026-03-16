@@ -17,6 +17,8 @@ public class PlayerCamera : MonoBehaviour
     float TimelineTime;
     public bool TimelineAnimating;
 
+    public float NormalZoom = 5f;
+    public float BigZoom = 10f;
     //Tween
     public void StartTween(float newStart, float newTarget, float newDuration)
     {
@@ -47,8 +49,8 @@ public class PlayerCamera : MonoBehaviour
     private void OnPressed(InputAction.CallbackContext context)
     {
         if (TimelineAnimating) return;
-        if (Switched) StartTween(10f, 5f, 1f);
-        else StartTween(5f, 10f, 1f);
+        if (Switched) StartTween(BigZoom, NormalZoom, 1f);
+        else StartTween(NormalZoom, BigZoom, 1f);
     }
 
     void Update()
