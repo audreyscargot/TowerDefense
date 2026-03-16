@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 public class GameManager : MonoBehaviour
 {
     //Settings
-    private float PlayerLightIntensity = 50;
+    public float PlayerLightIntensity = 50;
 
     //References
     public GameObject Player;
