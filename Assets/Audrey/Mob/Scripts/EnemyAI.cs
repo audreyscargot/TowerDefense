@@ -26,6 +26,7 @@ public class EnemyAI : MonoBehaviour
     
     void Start()
     {
+        player = GameObject.Find("Player");
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -65,14 +66,14 @@ public class EnemyAI : MonoBehaviour
             if (hit.collider != null)
             {
                 GameObject hitObject = hit.collider.gameObject;
-
                 PlayerHealth pHealth = hitObject.GetComponent<PlayerHealth>();
+                Debug.Log(pHealth ? pHealth.currentHealth : null);
                 if (pHealth != null) pHealth.ChangeHealth(-damage);
                 
                 // Barrier barrier = hitObject.GetComponent<Barrier>();
                 // if (barrier != null) barrier.TakeDamage(damage);
             }
-
+            
             canAttack = false;
             Invoke("ResetAttack", attackCooldown);
         }
@@ -95,6 +96,7 @@ public class EnemyAI : MonoBehaviour
 
     void ResetAttack()
     {
+        Debug.Log("Reset");
         canAttack = true;
     }
 

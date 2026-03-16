@@ -15,6 +15,8 @@ public class MapGenerator : MonoBehaviour
     public GameObject[] resourcePrefabs;
     [Range(0f, 1f)] public float resourceSpawnChance = 0.15f;
 
+    public GameObject enemyPrefab;
+
     [Header("Category 3: Core Structures")]
     public GameObject basePrefab;           
     public GameObject aiSpawnPointPrefab;  
@@ -29,6 +31,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateFullMap()
     {
+        
         int halfSize = mapSize / 2;
         
         obstacleGrid = new bool[mapSize, mapSize];
@@ -81,7 +84,9 @@ public class MapGenerator : MonoBehaviour
                 {
                     obstacleGrid[arrayX, arrayY] = false;
                 }
+                
             }
+            
         }
         
         
@@ -108,5 +113,21 @@ public class MapGenerator : MonoBehaviour
             obstacleGrid[arrayX, arrayY] = false;
             obstacleCoordinates.Remove(worldGridPosition);
         }
+    }
+
+    public void SpawnEnemy()
+    {
+        Debug.Log("SPAWN");
+        int enemyCount = 3;
+        for (int i = 0; i < enemyCount; i++)
+        {
+            int arrayX = Random.Range(0, mapSize/2);
+            int arrayY = Random.Range(0, mapSize/2);
+            GameObject randomEnemy = enemyPrefab;
+            Vector3 location = new Vector3(arrayX, arrayY, 0);
+            Instantiate(randomEnemy, location, Quaternion.identity, transform);
+        }
+        
+        
     }
 }

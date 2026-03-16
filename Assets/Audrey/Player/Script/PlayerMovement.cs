@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator anim;
     private Vector2 lastMoveDirection;
+
+    public GameObject rotateForAim;
     
     void Start()
     {
@@ -50,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(transform.forward, m_moveInput);
             Quaternion rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             
-            m_rigidBody.MoveRotation(rotation);
+            rotateForAim.transform.SetPositionAndRotation(transform.position, rotation);
         }
     }
 
@@ -79,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canAttack)
         {
-            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.5f, transform.up, attackRange, layerMask);
+            RaycastHit2D hit = Physics2D.CircleCast(rotateForAim.transform.position, 0.5f, rotateForAim.transform.up, attackRange, layerMask);
             EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
             if (hitEnemy)
             {

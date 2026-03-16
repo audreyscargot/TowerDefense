@@ -176,11 +176,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   target: {fileID: 0}
   targetTransform: {fileID: 0}
-  health: 0
+  health: 3
   player: {fileID: 0}
-  damage: 0
+  damage: 2
   enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 256
   rangeOfAttack: 1
   rangeOfSight: 3
