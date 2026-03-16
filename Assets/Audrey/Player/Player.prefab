@@ -429,7 +429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ea2e87272a81245ba946dee7d46559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionPlayer
-  InteractAction: {fileID: 0}
+  InteractAction: {fileID: -8778445180448123609, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   InteractionObjScript: {fileID: 0}
 --- !u!114 &9222122608650630997
 MonoBehaviour:

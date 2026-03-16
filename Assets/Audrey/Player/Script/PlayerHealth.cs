@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 namespace Audrey.Player.Script
 {
     public class PlayerHealth : MonoBehaviour
@@ -18,6 +19,7 @@ namespace Audrey.Player.Script
             if (currentHealth <= 0)
             {
                 //GameManager game over
+                SceneManager.LoadSceneAsync(1);
                 Debug.Log("DEAD");
             }
         }
