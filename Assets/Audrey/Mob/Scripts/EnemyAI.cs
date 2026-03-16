@@ -111,12 +111,11 @@ public class EnemyAI : MonoBehaviour
         canAttack = false;
         Invoke("ResetAttack", 1.0f);
         
-
-        Debug.Log(health);
         if (health <= 0)
         {
-            //Drop XP ?
+            EnemySpawner.Instance.EnemyDied(); 
             Destroy(gameObject);
         }
     }
+
 }

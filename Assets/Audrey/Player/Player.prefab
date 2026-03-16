@@ -88,7 +88,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3868812660829053132, guid: a659c736ad87c9645aabc9ab1068a5bb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -228,6 +228,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: ded70d70-7890-4199-ba78-c154b44ec9d9
     m_ActionName: 'Player/CameraSwitch[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a3d21f6b-e395-4450-a9f6-444966558909
+    m_ActionName: 'Player/Pointer Position[/Mouse/position]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 61de0b8c-8e7f-4708-9fe0-cf98382c0a71
+    m_ActionName: 'Player/RightClick[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6f458de6-6711-4314-b800-7fc3c4f9de83
+    m_ActionName: 'Player/Rotate[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c2de5f79-416e-435b-be09-ece27a8d7707
+    m_ActionName: 'Player/BuildingMode[/Keyboard/b]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9a947bc9-561e-4d0a-9cb4-85c3d29038d2
+    m_ActionName: 'Player/Interact[/Keyboard/e]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -246,7 +266,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   moveSpeed: 1
+  rotationSpeed: 0
   attackRange: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   attackCooldown: 0.5
   damage: 1
 --- !u!61 &2270249190579483690

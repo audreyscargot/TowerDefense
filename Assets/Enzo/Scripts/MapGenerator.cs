@@ -13,11 +13,13 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Category 2: Resource Objects")]
     public GameObject[] resourcePrefabs;
-
     [Range(0f, 1f)] public float resourceSpawnChance = 0.15f;
 
+    [Header("Category 3: Core Structures")]
+    public GameObject basePrefab;           
+    public GameObject aiSpawnPointPrefab;  
+
     private bool[,] obstacleGrid;
-    
     private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
 
     void Start()

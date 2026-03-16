@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8595413819552062378}
   - component: {fileID: -341255530190761250}
   - component: {fileID: -3250091958673171396}
+  - component: {fileID: -8361469643714124690}
   m_Layer: 8
   m_Name: Base
   m_TagString: Untagged
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -855298285791758126, guid: f32c1a3378d3aad449832f6253dcb822, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -153,3 +154,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.57, y: 0.36}
   m_EdgeRadius: 0
+--- !u!114 &-8361469643714124690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4310208884456796438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6fc606ac657d164aa64bffef1fabf2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Base

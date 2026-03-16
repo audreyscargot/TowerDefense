@@ -4,24 +4,25 @@ using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
+    // Events
+    public static Action OnNightStarted;
+    public static Action OnDayStarted;
+
     //Settings
-    public float PlayerLightIntensity = 50;
+    private float PlayerLightIntensity = 50;
 
     //References
     public GameObject Player;
     private PlayerLightHandler PlayerLightHandler;
-    public GameObject InteractIconNormal;
-
-    public GameObject InteractIconAnimated;
+  
 
     //General Variables
-    private float Days = 1; // counting days for score panel
-    private float NightStep = 0; // after how much step the night gonna end
-    private float DayStep = 0; // after how much step the day gonna end
+    public float Days = 1;
+    private float DayStep = 0; 
 
     //function variables
     private float DayNightCounter = 0;
-    private bool Day = true;
+    public bool isDay { get; private set; } = true; // Spawner needs to know this
 
     //timeline
     float TimelineStart;
@@ -30,14 +31,22 @@ public class GameManager : MonoBehaviour
     float TimelineTime;
     public bool TimelineAnimating;
     bool TimelinePlayerLightPoint;
-    public Volume ppv; // getting the volume
+    public Volume ppv;
 
     private void Start()
     {
         PlayerLightHandler = Player.GetComponent<PlayerLightHandler>();
+        
+        StartCoroutine(StartDayOneDelayed());
     }
 
-    //DayNight Tween
+    private System.Collections.IEnumerator StartDayOneDelayed()
+    {
+        yield return null; 
+        OnDayStarted?.Invoke();
+    }
+
+
     public void StartTween(float newStart, float newTarget, float newDuration)
     {
         TimelineStart = newStart;
@@ -48,48 +57,53 @@ public class GameManager : MonoBehaviour
         TimelinePlayerLightPoint = true;
     }
 
-    // player moved 1 time
+    // Called by DayNightButton to start the night
     public void PlayerMoved()
     {
-        if (!TimelineAnimating)
+        if (!TimelineAnimating && isDay)
         {
             DayNightCounter += 1;
-            if (Day && DayNightCounter >= DayStep)
+            if (DayNightCounter >= DayStep)
             {
-                Day = false;
+                isDay = false;
                 StartTween(0f, 1f, 5f);
                 DayNightCounter = 0;
+                
+                OnNightStarted?.Invoke(); // Tell spawner to start
             }
-            else if (!Day && DayNightCounter >= NightStep)
-            {
-                Days += 1;
-                Day = true;
-                StartTween(1f, 0f, 5f);
-                DayNightCounter = 0;
-                PlayerLightHandler.StartTweenPlayer(PlayerLightIntensity, 0f, 3f);
-            }
+        }
+    }
+
+    //Called by the Spawner when all enemies die
+    public void EndNight()
+    {
+        if (!isDay && !TimelineAnimating)
+        {
+            Days += 1;
+            isDay = true;
+            StartTween(1f, 0f, 5f);
+            PlayerLightHandler.StartTweenPlayer(PlayerLightIntensity, 0f, 3f);
+            
+            OnDayStarted?.Invoke(); // Tell spawners to show themselves for the new day
         }
     }
 
     void Update()
     {
-        // Day Night Timeline (count)
         if (!TimelineAnimating) return;
         TimelineTime += Time.deltaTime;
         float t = TimelineTime / TimelineDuration;
         if (ppv)
         {
             ppv.weight = Mathf.Lerp(TimelineStart, TimelineTarget, t);
-            if (t >= 0.6f && TimelinePlayerLightPoint && !Day)
+            if (t >= 0.6f && TimelinePlayerLightPoint && !isDay)
             {
                 TimelinePlayerLightPoint = false;
-                // Activating/Deactivating player light
                 PlayerLightHandler.StartTweenPlayer(0f, PlayerLightIntensity, 3f);
             }
 
             if (t >= 1f)
             {
-                // stoping the timeline
                 ppv.weight = TimelineTarget;
                 TimelineAnimating = false;
             }
