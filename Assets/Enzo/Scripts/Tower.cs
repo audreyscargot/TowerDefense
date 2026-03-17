@@ -1,39 +1,60 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-public class Tower : MonoBehaviour
+[System.Serializable]
+public class TowerLevelData
 {
-    [Header("Combat Settings")]
     public float detectionRadius = 5f;
     public float fireRate = 1.5f;
     public float projectileSpeed = 8f;
     public float damage = 10f;
+    public Sprite baseSprite;
+    public RuntimeAnimatorController weaponAnimator;
+}
 
-    [Header("Level Sprites - Base")]
-    public Sprite[] levelSprites; // level 1, 2, 3
+public class Tower : MonoBehaviour
+{
+    [Header("Level Data")]
+    public List<TowerLevelData> levels; // must match Upgradeable.levels count
 
     [Header("References")]
-    public GameObject projectilePrefab;   // single prefab
-    public GameObject impactEffectPrefab; // single prefab
+    public GameObject projectilePrefab;
+    public GameObject impactEffectPrefab;
     public Transform firePoint;
     public Transform weaponPivot;
 
-    [Header("Weapon Level Animators")]
-    public RuntimeAnimatorController[] weaponLevelAnimators; // swap on upgrade
-    
     [Header("Layer")]
     public LayerMask enemyLayer;
 
     private SpriteRenderer baseSpriteRenderer;
-    private int currentLevel = 0;
+    private Animator weaponAnimator;
     private float fireCooldown = 0f;
+
+    private float detectionRadius;
+    private float fireRate;
+    private float projectileSpeed;
+    private float damage;
+    private int currentLevel = 0;
 
     void Start()
     {
         baseSpriteRenderer = GetComponent<SpriteRenderer>();
+        weaponAnimator = weaponPivot != null ? weaponPivot.GetComponent<Animator>() : null;
+
+        // Subscribe to upgrade events
+        Upgradeable upgradeable = GetComponent<Upgradeable>();
+        if (upgradeable != null) upgradeable.OnLevelChanged.AddListener(OnUpgraded);
+
+        ApplyLevelData(0);
         fireCooldown = 1f / fireRate;
-        ApplyLevelVisuals();
+        if (weaponAnimator != null) weaponAnimator.speed = 0f;
     }
 
+    private void OnUpgraded(int newLevel)
+    {
+        currentLevel = newLevel;
+        ApplyLevelData(newLevel);
+    }
 
     void Update()
     {
@@ -43,6 +64,8 @@ public class Tower : MonoBehaviour
 
         if (enemyInRange != null)
         {
+            if (weaponAnimator != null) weaponAnimator.speed = 1f;
+
             if (weaponPivot != null)
             {
                 Vector2 dir = (enemyInRange.transform.position - weaponPivot.position).normalized;
@@ -59,9 +82,10 @@ public class Tower : MonoBehaviour
         else
         {
             fireCooldown = Mathf.Max(fireCooldown, 0f);
+            if (weaponAnimator != null) weaponAnimator.speed = 0f;
         }
     }
-    
+
     private void Shoot(Transform target)
     {
         if (projectilePrefab == null) return;
@@ -77,31 +101,31 @@ public class Tower : MonoBehaviour
         if (projectileScript != null)
             projectileScript.Init(damage, currentLevel, impactEffectPrefab);
     }
-    
-    public void Upgrade()
+
+    private void ApplyLevelData(int level)
     {
-        if (currentLevel < 2) // max level 3 (index 2)
+        if (levels == null || levels.Count <= level) return;
+
+        TowerLevelData data = levels[level];
+        detectionRadius = data.detectionRadius;
+        fireRate = data.fireRate;
+        projectileSpeed = data.projectileSpeed;
+        damage = data.damage;
+
+        if (baseSpriteRenderer != null && data.baseSprite != null)
+            baseSpriteRenderer.sprite = data.baseSprite;
+
+        if (weaponAnimator != null && data.weaponAnimator != null)
         {
-            currentLevel++;
-            damage += 5f;
-            detectionRadius += 0.5f;
-            ApplyLevelVisuals();
+            weaponAnimator.runtimeAnimatorController = data.weaponAnimator;
+            weaponAnimator.speed = 0f;
         }
     }
 
-    private void ApplyLevelVisuals()
-    {
-        if (baseSpriteRenderer != null && levelSprites != null && levelSprites.Length > currentLevel)
-            baseSpriteRenderer.sprite = levelSprites[currentLevel];
-
-        Animator weaponAnimator = weaponPivot != null ? weaponPivot.GetComponent<Animator>() : null;
-        if (weaponAnimator != null && weaponLevelAnimators != null && weaponLevelAnimators.Length > currentLevel)
-            weaponAnimator.runtimeAnimatorController = weaponLevelAnimators[currentLevel];
-    }
-    
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        float radius = (levels != null && levels.Count > 0) ? levels[0].detectionRadius : 5f;
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

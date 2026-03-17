@@ -14,6 +14,9 @@ public class BuildingSystem : MonoBehaviour
     public LayerMask unbuildableLayer;
     public float gridSize = 0.5f;
 
+    [Header("Upgrade UI")]
+    public Font upgradeUIFont;
+
     [Header("Tilemap Reference")]
     public Tilemap groundTilemap;
 
@@ -37,6 +40,7 @@ public class BuildingSystem : MonoBehaviour
     private GameObject currentPreviewObject;
     private GameObject generatedCanvas;
     private GameObject buildMenuPanel;
+    private GameObject upgradePanel;
 
     void Start()
     {
@@ -90,7 +94,8 @@ public class BuildingSystem : MonoBehaviour
             btnObj.GetComponent<Image>().sprite = prefabSprite;
 
             Text btnText = btnObj.GetComponentInChildren<Text>();
-            btnText.text = $"{item.displayName}\n({item.cost} {item.resourceType})";
+            string costLabel = string.Join(", ", item.costs.ConvertAll(c => $"{c.amount} {c.resourceType}"));
+            btnText.text = $"{item.displayName}\n({costLabel})";
             btnText.alignment = TextAnchor.LowerCenter;
             btnText.color = Color.white;
             btnText.fontStyle = FontStyle.Bold;
@@ -120,7 +125,7 @@ public class BuildingSystem : MonoBehaviour
     {
         if (toggleBuildModeAction != null) { toggleBuildModeAction.action.performed -= OnToggleBuildMode; toggleBuildModeAction.action.Disable(); }
         if (leftClickAction != null) { leftClickAction.action.performed -= OnLeftClick; leftClickAction.action.Disable(); }
-        if (rightClickAction != null) { rightClickAction.action.performed -= OnRightClick; rightClickAction.action.Disable(); } // bug fix: was disabling leftClickAction twice
+        if (rightClickAction != null) { rightClickAction.action.performed -= OnRightClick; rightClickAction.action.Disable(); }
         if (pointerPositionAction != null) { pointerPositionAction.action.Disable(); }
         if (rotateAction != null) { rotateAction.action.performed -= OnRotate; rotateAction.action.Disable(); }
     }
@@ -138,8 +143,121 @@ public class BuildingSystem : MonoBehaviour
         {
             tryBuildThisFrame = false;
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-            PlaceGhostStructure();
+
+            if (TrySelectBuildingAtMouse()) return;
+
+            if (currentSelection != null) PlaceGhostStructure();
         }
+    }
+
+    private bool TrySelectBuildingAtMouse()
+    {
+        Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
+        Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
+
+        if (hit != null)
+        {
+            Upgradeable upgradeable = hit.GetComponent<Upgradeable>()
+                                    ?? hit.GetComponentInParent<Upgradeable>();
+            if (upgradeable != null)
+            {
+                ShowUpgradePanel(upgradeable);
+                return true;
+            }
+        }
+
+        CloseUpgradePanel();
+        return false;
+    }
+
+    private void ShowUpgradePanel(Upgradeable upgradeable)
+    {
+        CloseUpgradePanel();
+
+        upgradePanel = new GameObject("UpgradePanel");
+        upgradePanel.transform.SetParent(generatedCanvas.transform, false);
+
+        Image bg = upgradePanel.AddComponent<Image>();
+        bg.color = new Color(0, 0, 0, 0.85f);
+        RectTransform rt = upgradePanel.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.35f, 0.2f);
+        rt.anchorMax = new Vector2(0.65f, 0.45f);
+        rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+        VerticalLayoutGroup vLayout = upgradePanel.AddComponent<VerticalLayoutGroup>();
+        vLayout.childAlignment = TextAnchor.MiddleCenter;
+        vLayout.spacing = 8;
+        vLayout.padding = new RectOffset(10, 10, 10, 10);
+        vLayout.childControlWidth = true;
+        vLayout.childControlHeight = false;
+
+        if (!upgradeable.canBeUpgraded || upgradeable.IsMaxLevel)
+        {
+            AddLabel(upgradePanel.transform, upgradeable.canBeUpgraded ? "MAX LEVEL" : "Cannot be upgraded");
+        }
+        else
+        {
+            List<ResourceCost> costs = upgradeable.GetNextUpgradeCost();
+            string costStr = string.Join(", ", costs.ConvertAll(c => $"{c.amount} {c.resourceType}"));
+            AddLabel(upgradePanel.transform, "Upgrade?");
+            AddLabel(upgradePanel.transform, $"Cost: {costStr}");
+
+            DefaultControls.Resources res = new DefaultControls.Resources();
+            GameObject btnObj = DefaultControls.CreateButton(res);
+            btnObj.transform.SetParent(upgradePanel.transform, false);
+            btnObj.GetComponentInChildren<Text>().text = "Upgrade";
+            btnObj.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 30);
+            btnObj.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                TryUpgrade(upgradeable);
+                CloseUpgradePanel();
+            });
+        }
+
+        DefaultControls.Resources res2 = new DefaultControls.Resources();
+        GameObject closeBtn = DefaultControls.CreateButton(res2);
+        closeBtn.transform.SetParent(upgradePanel.transform, false);
+        closeBtn.GetComponentInChildren<Text>().text = "Close";
+        closeBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 30);
+        closeBtn.GetComponent<Button>().onClick.AddListener(CloseUpgradePanel);
+    }
+
+    private void AddLabel(Transform parent, string text)
+    {
+        GameObject obj = new GameObject("Label");
+        obj.transform.SetParent(parent, false);
+        Text label = obj.AddComponent<Text>();
+        label.text = text;
+        label.color = Color.white;
+        label.alignment = TextAnchor.MiddleCenter;
+        label.fontSize = 14;
+        label.font = upgradeUIFont != null ? upgradeUIFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        obj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 25);
+    }
+
+    private void TryUpgrade(Upgradeable upgradeable)
+    {
+        if (!upgradeable.canBeUpgraded || upgradeable.IsMaxLevel) return;
+
+        List<ResourceCost> costs = upgradeable.GetNextUpgradeCost();
+        foreach (var cost in costs)
+        {
+            if (!InventoryManager.Instance.HasItem(cost.resourceType, cost.amount))
+            {
+                Debug.Log($"Not enough {cost.resourceType}! Need {cost.amount}.");
+                return;
+            }
+        }
+
+        foreach (var cost in costs)
+            InventoryManager.Instance.RemoveItem(cost.resourceType, cost.amount);
+
+        upgradeable.Upgrade();
+    }
+
+    private void CloseUpgradePanel()
+    {
+        if (upgradePanel != null) { Destroy(upgradePanel); upgradePanel = null; }
     }
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
@@ -172,6 +290,7 @@ public class BuildingSystem : MonoBehaviour
     {
         isBuildingMode = true;
         currentRotationAngle = 0f;
+        CloseUpgradePanel();
         if (buildMenuPanel != null) buildMenuPanel.SetActive(true);
     }
 
@@ -181,10 +300,13 @@ public class BuildingSystem : MonoBehaviour
 
         foreach (var item in ghostBuildingData)
         {
-            if (totalCosts.ContainsKey(item.resourceType))
-                totalCosts[item.resourceType] += item.cost;
-            else
-                totalCosts.Add(item.resourceType, item.cost);
+            foreach (var cost in item.costs)
+            {
+                if (totalCosts.ContainsKey(cost.resourceType))
+                    totalCosts[cost.resourceType] += cost.amount;
+                else
+                    totalCosts.Add(cost.resourceType, cost.amount);
+            }
         }
 
         bool canAffordAll = true;
@@ -220,6 +342,7 @@ public class BuildingSystem : MonoBehaviour
 
         isBuildingMode = false;
         currentSelection = null;
+        CloseUpgradePanel();
         if (buildMenuPanel != null) buildMenuPanel.SetActive(false);
         DestroyPreviewObject();
     }
@@ -228,7 +351,6 @@ public class BuildingSystem : MonoBehaviour
     {
         currentSelection = item;
         currentRotationAngle = 0f;
-
         DestroyPreviewObject();
         CreatePreviewObject();
     }
@@ -271,9 +393,7 @@ public class BuildingSystem : MonoBehaviour
         bool canBuild = CanBuildHere(gridPos);
 
         foreach (SpriteRenderer sr in renderers)
-        {
             sr.color = canBuild ? new Color(0, 1, 0, 0.5f) : new Color(1, 0, 0, 0.5f);
-        }
     }
 
     private void PlaceGhostStructure()
@@ -346,7 +466,6 @@ public class BuildingSystem : MonoBehaviour
 
     private bool CanBuildHere(Vector2 position)
     {
-        // Only allow building inside the safe zone around the map center
         if (MapGenerator.Instance != null)
         {
             Vector2 mapCenter = MapGenerator.Instance.MapCenterWorld;
@@ -384,10 +503,16 @@ public class BuildingSystem : MonoBehaviour
 }
 
 [System.Serializable]
+public class ResourceCost
+{
+    public string resourceType = "Wood";
+    public int amount = 5;
+}
+
+[System.Serializable]
 public class BuildableItem
 {
     public string displayName;
     public GameObject prefab;
-    public string resourceType = "Wood";
-    public int cost = 5;
+    public List<ResourceCost> costs = new List<ResourceCost>();
 }

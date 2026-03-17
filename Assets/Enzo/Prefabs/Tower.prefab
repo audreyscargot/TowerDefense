@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 2883429981227728285}
   - component: {fileID: 3014097419246918124}
   - component: {fileID: 2354268671065390527}
+  - component: {fileID: 8737651160644205250}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Untagged
@@ -228,7 +229,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 11
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 423056d7707832841a5d439fda8e0937, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -298,22 +299,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14fa2b30f08a4229956165e4a6e8676f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  detectionRadius: 5
-  fireRate: 1.5
-  projectileSpeed: 8
-  damage: 10
-  levelSprites:
-  - {fileID: 21300000, guid: 8b3efcf9a8c0bcc438ca927848a3481a, type: 2}
-  - {fileID: 21300000, guid: ac19498e7e39e424fbfbc09ed4f336fb, type: 2}
-  - {fileID: 21300000, guid: 423056d7707832841a5d439fda8e0937, type: 2}
+  levels:
+  - detectionRadius: 5
+    fireRate: 1.5
+    projectileSpeed: 8
+    damage: 1
+    baseSprite: {fileID: 21300000, guid: 8b3efcf9a8c0bcc438ca927848a3481a, type: 2}
+    weaponAnimator: {fileID: -4494482025817422569, guid: f017dafc80234c04cba618dc62a3bf87, type: 3}
+  - detectionRadius: 10
+    fireRate: 2
+    projectileSpeed: 8
+    damage: 2
+    baseSprite: {fileID: 21300000, guid: ac19498e7e39e424fbfbc09ed4f336fb, type: 2}
+    weaponAnimator: {fileID: -297909741517146880, guid: ef5b2c4165d911a4e95c0b5b61274156, type: 3}
+  - detectionRadius: 15
+    fireRate: 3
+    projectileSpeed: 8
+    damage: 3
+    baseSprite: {fileID: 21300000, guid: 423056d7707832841a5d439fda8e0937, type: 2}
+    weaponAnimator: {fileID: 8255107083389019057, guid: 8f7889126bba9264abecea45e01a4b1f, type: 3}
   projectilePrefab: {fileID: 1108757344037292107, guid: a299509219eed4c4387291755834b794, type: 3}
   impactEffectPrefab: {fileID: 2832332965234205509, guid: cb9f0da4968dc3049b1febdcb478818b, type: 3}
   firePoint: {fileID: 8073217437778015751}
   weaponPivot: {fileID: 8562327807187953574}
-  weaponLevelAnimators:
-  - {fileID: -4494482025817422569, guid: f017dafc80234c04cba618dc62a3bf87, type: 3}
-  - {fileID: -297909741517146880, guid: ef5b2c4165d911a4e95c0b5b61274156, type: 3}
-  - {fileID: 8255107083389019057, guid: 8f7889126bba9264abecea45e01a4b1f, type: 3}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &8737651160644205250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5880362381162859388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc6abfed75294b629873c65bb09575e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Upgradeable
+  canBeUpgraded: 1
+  levels:
+  - levelName: Level 1
+    costs:
+    - resourceType: Wood
+      amount: 1
+    - resourceType: Stone
+      amount: 1
+  - levelName: Level 2
+    costs:
+    - resourceType: Wood
+      amount: 1
+    - resourceType: Stone
+      amount: 1
+  - levelName: Level 3
+    costs:
+    - resourceType: Wood
+      amount: 1
+    - resourceType: Stone
+      amount: 1
+  OnLevelChanged:
+    m_PersistentCalls:
+      m_Calls: []
