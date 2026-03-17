@@ -16,6 +16,7 @@ public class FoodSpots : Interactable
     void Start()
     {
         currentSprite = GetComponent<SpriteRenderer>();
+        
         GameManager.OnDayStarted += Grow;
     }
     void Grow()

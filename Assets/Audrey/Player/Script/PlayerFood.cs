@@ -18,7 +18,8 @@ public class PlayerFood : MonoBehaviour
     {
         currentFood = Mathf.Clamp(currentFood + amount, 0, maxFood);
         canAction = currentFood > 0;
-        Debug.Log(currentFood);
+        Debug.Log("current food: " + currentFood);
+        UIManager.Instance.UpdateText("Food");
     }
 
     //temp for one type of food

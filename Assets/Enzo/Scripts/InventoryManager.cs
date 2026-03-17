@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class InventoryManager : MonoBehaviour
         {
             inventory.Add(itemName, amount);
         }
-        
+        UIManager.Instance.UpdateText(itemName);
         Debug.Log($"Inventory Updated: {itemName} = {inventory[itemName]}");
     }
 
@@ -43,5 +44,18 @@ public class InventoryManager : MonoBehaviour
             inventory[itemName] -= amountToRemove;
             Debug.Log($"Spent {amountToRemove} {itemName}. Remaining: {inventory[itemName]}");
         }
+        UIManager.Instance.UpdateText(itemName);
+    }
+
+    public string findInInventory(string itemName)
+    {
+        Debug.Log(itemName);
+        if (inventory.ContainsKey(itemName))
+        {
+            Debug.Log("found");
+            return inventory[itemName].ToString();
+        }
+        return 0.ToString();
+        
     }
 }

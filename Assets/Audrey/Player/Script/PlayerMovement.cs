@@ -121,10 +121,10 @@ public class PlayerMovement : MonoBehaviour
     
     public void Test2()
     {
-        Debug.Log("Test2");
-        if (Keyboard.current.cKey.wasPressedThisFrame)
+        if (Keyboard.current.rKey.wasPressedThisFrame)
         {
             food.ConsumeFood();
+            Debug.Log("Consume Food");
         }
     }
 }
