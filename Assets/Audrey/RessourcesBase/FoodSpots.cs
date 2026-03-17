@@ -3,18 +3,24 @@ using UnityEngine;
 public class FoodSpots : Interactable
 {
     bool isHarvestable = true;
-    private int daysToGrow;
-    private int currentDay = 0;
+    public int daysToGrow;
+    private int currentDay = -1;
 
     public Sprite[] plantDays;
 
-    public SpriteRenderer currentSprite;
+    private SpriteRenderer currentSprite;
     
     public GameObject dropItemPrefab;
     public int dropCount;
-    
+
+    void Start()
+    {
+        currentSprite = GetComponent<SpriteRenderer>();
+        GameManager.OnDayStarted += Grow;
+    }
     void Grow()
     {
+        Debug.Log("Grow");
         currentDay++;
         currentSprite.sprite = plantDays[currentDay];
         if (currentDay >= daysToGrow)

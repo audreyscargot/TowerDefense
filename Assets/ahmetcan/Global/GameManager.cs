@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
                 DayNightCounter = 0;
                 
                 OnNightStarted?.Invoke(); // Tell spawner to start
+                Debug.Log("Day " + DayNightCounter);
             }
         }
     }

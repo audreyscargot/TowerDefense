@@ -5,10 +5,13 @@ public class DayNightButton : Interactable
 {
     public GameObject GameManagerObj;
     public GameManager GameManager;
+
     public void Start()
     {
+        GameManagerObj = GameObject.Find("GameManager");
         GameManager = GameManagerObj.GetComponent<GameManager>();
     }
+
 
     public override void Action()
     {

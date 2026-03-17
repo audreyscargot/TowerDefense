@@ -45,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
         m_moveInput = context.ReadValue<Vector2>();
     }
 
+    //Make Rotation for linetrace aim
     private void RotateInDirection()
     {
         if (m_moveInput != Vector2.zero)
@@ -56,12 +57,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //Functions for sprite animation
     void ProcessInput()
     {
         m_moveInput.Normalize();
         float moveX = rotateForAim.transform.up.x;
         float moveY = rotateForAim.transform.up.y;
-        Debug.Log(moveX + " " + moveY);
         if ((m_moveInput.x != 0 || m_moveInput.y != 0))
         {
             lastMoveDirection = m_moveInput; 
@@ -89,9 +90,7 @@ public class PlayerMovement : MonoBehaviour
                 hitEnemy.TakeDamage(damage);
                 
             }
-            
-            
-            //à modifier avec une health en commun parce que c'est n'imp là
+           
            ResourceNode resourceNode = hit ? hit.collider.gameObject.GetComponent<ResourceNode>() : null;
             if (resourceNode)
             {
