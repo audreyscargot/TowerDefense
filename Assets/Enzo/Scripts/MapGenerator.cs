@@ -11,7 +11,8 @@ public class MapGenerator : MonoBehaviour
     public Tilemap groundTilemap;
 
     [Header("Safe Zone")]
-    public float SafeZoneWorldRadius = 5f;
+    public float SafeZoneRadiusDividend = 5f;
+    public float SafeZoneWorldRadius => (mapSize / SafeZoneRadiusDividend);
     public Vector2 MapCenterWorld => groundTilemap.GetCellCenterWorld(Vector3Int.zero);
 
     [Header("Category 1: Base Tiles (Ground)")]
@@ -66,7 +67,16 @@ public class MapGenerator : MonoBehaviour
                     groundTilemap.SetTile(gridPosition, baseTiles[tileIndex]);
                 }
 
+                // Skip center tile (base placement)
                 if (x == 0 && y == 0)
+                {
+                    obstacleGrid[arrayX, arrayY] = false;
+                    continue;
+                }
+
+                // Skip resource spawning inside the safe zone
+                Vector3 worldPos = groundTilemap.GetCellCenterWorld(gridPosition);
+                if (Vector2.Distance(worldPos, MapCenterWorld) <= SafeZoneWorldRadius)
                 {
                     obstacleGrid[arrayX, arrayY] = false;
                     continue;
@@ -74,8 +84,7 @@ public class MapGenerator : MonoBehaviour
 
                 if (resourcePrefabs != null && resourcePrefabs.Length > 0 && Random.value < resourceSpawnChance)
                 {
-                    Vector3 spawnPos = groundTilemap.GetCellCenterWorld(gridPosition);
-                    Instantiate(resourcePrefabs[Random.Range(0, resourcePrefabs.Length)], spawnPos, Quaternion.identity, transform);
+                    Instantiate(resourcePrefabs[Random.Range(0, resourcePrefabs.Length)], worldPos, Quaternion.identity, transform);
                     obstacleGrid[arrayX, arrayY] = true;
                     obstacleCoordinates.Add(new Vector2Int(x, y));
                 }
@@ -112,10 +121,10 @@ public class MapGenerator : MonoBehaviour
 
         switch (Random.Range(0, 4))
         {
-            case 0:  x = -halfSize;    y = Random.Range(-halfSize, halfSize); break; // left
-            case 1:  x = halfSize - 1; y = Random.Range(-halfSize, halfSize); break; // right
-            case 2:  x = Random.Range(-halfSize, halfSize); y = -halfSize;    break; // bottom
-            default: x = Random.Range(-halfSize, halfSize); y = halfSize - 1; break; // top
+            case 0:  x = -halfSize;    y = Random.Range(-halfSize, halfSize); break;
+            case 1:  x = halfSize - 1; y = Random.Range(-halfSize, halfSize); break;
+            case 2:  x = Random.Range(-halfSize, halfSize); y = -halfSize;    break;
+            default: x = Random.Range(-halfSize, halfSize); y = halfSize - 1; break;
         }
 
         return groundTilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));

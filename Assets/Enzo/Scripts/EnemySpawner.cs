@@ -8,9 +8,9 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("Spawn Settings")]
     public GameObject enemyPrefab;
-    public int baseEnemiesPerNight = 3;
+    public int baseEnemiesPerNight = 1;
     public float timeBetweenSpawns = 1.0f;
-    public int spawnPointCount = 3;
+    public int spawnPointCount = 1;
 
     [Header("Visuals")]
     public GameObject spawnIndicatorPrefab;
@@ -21,6 +21,8 @@ public class EnemySpawner : MonoBehaviour
     private int enemiesAlive = 0;
     private int enemiesToSpawnThisNight = 0;
     private int enemiesSpawnedSoFar = 0;
+    
+    private bool skipFirstDayEvent = true; // MapGenerator already called PrepareForNewDay for day 1
 
     private void Awake()
     {
@@ -31,16 +33,20 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        GameManager.OnDayStarted += PrepareForNewDay;
+        GameManager.OnDayStarted += OnDayStartedHandler;
         GameManager.OnNightStarted += StartNightWave;
-        // Day 1 indicators are spawned by MapGenerator.GenerateFullMap()
-        // so no manual call needed here
     }
 
     private void OnDestroy()
     {
-        GameManager.OnDayStarted -= PrepareForNewDay;
+        GameManager.OnDayStarted -= OnDayStartedHandler;
         GameManager.OnNightStarted -= StartNightWave;
+    }
+    
+    private void OnDayStartedHandler()
+    {
+        if (skipFirstDayEvent) { skipFirstDayEvent = false; return; }
+        PrepareForNewDay();
     }
 
     public void PrepareForNewDay()
@@ -80,7 +86,7 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator StartWaveDelayed()
     {
-        yield return new WaitForSeconds(0.5f); // give NavMesh time to finish baking
+        yield return new WaitForSeconds(0.5f); 
         int currentDay = gameManager != null ? (int)gameManager.Days : 1;
         enemiesToSpawnThisNight = baseEnemiesPerNight + (currentDay * 2);
         enemiesSpawnedSoFar = 0;

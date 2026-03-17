@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public bool TimelineAnimating;
     bool TimelinePlayerLightPoint;
     public Volume ppv;
+    
 
     private void Start()
     {

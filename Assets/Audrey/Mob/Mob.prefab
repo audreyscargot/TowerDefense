@@ -178,7 +178,7 @@ MonoBehaviour:
   targetTransform: {fileID: 0}
   health: 3
   player: {fileID: 0}
-  damage: 2
+  damage: 0
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 256
