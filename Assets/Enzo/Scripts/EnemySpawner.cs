@@ -12,8 +12,12 @@ public class EnemySpawner : MonoBehaviour
     public float timeBetweenSpawns = 1.0f;
     public int spawnPointCount = 3;
 
+    [Header("Visuals")]
+    public GameObject spawnIndicatorPrefab;
+
     private GameManager gameManager;
-    private List<GameObject> activeSpawnPoints = new List<GameObject>();
+    private List<Vector3> spawnPositions = new List<Vector3>();
+    private List<GameObject> spawnIndicators = new List<GameObject>();
     private int enemiesAlive = 0;
     private int enemiesToSpawnThisNight = 0;
     private int enemiesSpawnedSoFar = 0;
@@ -29,6 +33,8 @@ public class EnemySpawner : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         GameManager.OnDayStarted += PrepareForNewDay;
         GameManager.OnNightStarted += StartNightWave;
+        // Day 1 indicators are spawned by MapGenerator.GenerateFullMap()
+        // so no manual call needed here
     }
 
     private void OnDestroy()
@@ -37,16 +43,15 @@ public class EnemySpawner : MonoBehaviour
         GameManager.OnNightStarted -= StartNightWave;
     }
 
-    private void PrepareForNewDay()
+    public void PrepareForNewDay()
     {
-        // Stop any wave coroutine BEFORE destroying spawn points
         StopAllCoroutines();
 
-        foreach (GameObject sp in activeSpawnPoints)
-        {
-            if (sp != null) Destroy(sp);
-        }
-        activeSpawnPoints.Clear();
+        // Destroy previous indicators
+        foreach (GameObject indicator in spawnIndicators)
+            if (indicator != null) Destroy(indicator);
+        spawnIndicators.Clear();
+        spawnPositions.Clear();
 
         if (MapGenerator.Instance == null)
         {
@@ -54,31 +59,32 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        if (MapGenerator.Instance.aiSpawnPointPrefab == null)
-        {
-            Debug.LogWarning("EnemySpawner: aiSpawnPointPrefab is not assigned on MapGenerator.");
-            return;
-        }
-
         for (int i = 0; i < spawnPointCount; i++)
         {
             Vector3 edgePos = MapGenerator.Instance.GetRandomEdgeWorldPosition();
-            GameObject sp = Instantiate(MapGenerator.Instance.aiSpawnPointPrefab, edgePos, Quaternion.identity);
-            activeSpawnPoints.Add(sp);
+            spawnPositions.Add(edgePos);
+
+            if (spawnIndicatorPrefab != null)
+                spawnIndicators.Add(Instantiate(spawnIndicatorPrefab, edgePos, Quaternion.identity));
         }
 
-        Debug.Log($"Prepared {activeSpawnPoints.Count} spawn points for the new day.");
+        Debug.Log($"Prepared {spawnPositions.Count} spawn positions.");
     }
 
     private void StartNightWave()
     {
-        if (activeSpawnPoints.Count == 0) return;
+        // Indicators stay visible during the night
+        if (spawnPositions.Count == 0) return;
+        StartCoroutine(StartWaveDelayed());
+    }
 
+    private IEnumerator StartWaveDelayed()
+    {
+        yield return new WaitForSeconds(0.5f); // give NavMesh time to finish baking
         int currentDay = gameManager != null ? (int)gameManager.Days : 1;
         enemiesToSpawnThisNight = baseEnemiesPerNight + (currentDay * 2);
         enemiesSpawnedSoFar = 0;
         enemiesAlive = 0;
-
         StartCoroutine(SpawnRoutine());
     }
 
@@ -86,19 +92,10 @@ public class EnemySpawner : MonoBehaviour
     {
         while (enemiesSpawnedSoFar < enemiesToSpawnThisNight)
         {
-            activeSpawnPoints.RemoveAll(sp => sp == null);
-
-            if (activeSpawnPoints.Count == 0)
-            {
-                Debug.LogWarning("All spawn points were destroyed during the wave.");
-                yield break;
-            }
-
-            Transform randomPoint = activeSpawnPoints[Random.Range(0, activeSpawnPoints.Count)].transform;
-            Instantiate(enemyPrefab, randomPoint.position, Quaternion.identity);
+            Vector3 randomPos = spawnPositions[Random.Range(0, spawnPositions.Count)];
+            Instantiate(enemyPrefab, randomPos, Quaternion.identity);
             enemiesAlive++;
             enemiesSpawnedSoFar++;
-
             yield return new WaitForSeconds(timeBetweenSpawns);
         }
     }
@@ -106,7 +103,6 @@ public class EnemySpawner : MonoBehaviour
     public void EnemyDied()
     {
         enemiesAlive--;
-
         if (enemiesSpawnedSoFar >= enemiesToSpawnThisNight && enemiesAlive <= 0)
         {
             Debug.Log("Wave Defeated! Starting next day...");

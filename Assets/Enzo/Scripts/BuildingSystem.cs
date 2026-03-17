@@ -11,26 +11,25 @@ public class BuildingSystem : MonoBehaviour
     public List<BuildableItem> availableBuildings;
 
     [Header("Placement Settings")]
-    public LayerMask unbuildableLayer; 
-    public float maxBuildDistance = 5f;
+    public LayerMask unbuildableLayer;
     public float gridSize = 0.5f;
 
     [Header("Tilemap Reference")]
     public Tilemap groundTilemap;
 
     [Header("Input Actions")]
-    public InputActionReference toggleBuildModeAction; 
-    public InputActionReference leftClickAction;       
-    public InputActionReference rightClickAction;      
-    public InputActionReference pointerPositionAction; 
-    public InputActionReference rotateAction; 
+    public InputActionReference toggleBuildModeAction;
+    public InputActionReference leftClickAction;
+    public InputActionReference rightClickAction;
+    public InputActionReference pointerPositionAction;
+    public InputActionReference rotateAction;
 
     private bool isBuildingMode = false;
     private BuildableItem currentSelection;
     private Vector2 currentMouseScreenPos;
     private Camera mainCam;
     private bool tryBuildThisFrame = false;
-    private float currentRotationAngle = 0f; 
+    private float currentRotationAngle = 0f;
 
     private List<GameObject> ghostBuildings = new List<GameObject>();
     private List<BuildableItem> ghostBuildingData = new List<BuildableItem>();
@@ -63,7 +62,7 @@ public class BuildingSystem : MonoBehaviour
         DefaultControls.Resources uiResources = new DefaultControls.Resources();
         buildMenuPanel = DefaultControls.CreatePanel(uiResources);
         buildMenuPanel.transform.SetParent(generatedCanvas.transform, false);
-        
+
         RectTransform panelRect = buildMenuPanel.GetComponent<RectTransform>();
         panelRect.anchorMin = new Vector2(0.2f, 0f);
         panelRect.anchorMax = new Vector2(0.8f, 0.2f);
@@ -99,7 +98,7 @@ public class BuildingSystem : MonoBehaviour
             Outline outline = btnObj.AddComponent<Outline>();
             outline.effectColor = Color.black;
 
-            btnObj.GetComponent<Button>().onClick.AddListener(() => 
+            btnObj.GetComponent<Button>().onClick.AddListener(() =>
             {
                 SelectBuilding(item);
             });
@@ -121,7 +120,7 @@ public class BuildingSystem : MonoBehaviour
     {
         if (toggleBuildModeAction != null) { toggleBuildModeAction.action.performed -= OnToggleBuildMode; toggleBuildModeAction.action.Disable(); }
         if (leftClickAction != null) { leftClickAction.action.performed -= OnLeftClick; leftClickAction.action.Disable(); }
-        if (rightClickAction != null) { rightClickAction.action.performed -= OnRightClick; leftClickAction.action.Disable(); }
+        if (rightClickAction != null) { rightClickAction.action.performed -= OnRightClick; rightClickAction.action.Disable(); } // bug fix: was disabling leftClickAction twice
         if (pointerPositionAction != null) { pointerPositionAction.action.Disable(); }
         if (rotateAction != null) { rotateAction.action.performed -= OnRotate; rotateAction.action.Disable(); }
     }
@@ -137,7 +136,7 @@ public class BuildingSystem : MonoBehaviour
 
         if (tryBuildThisFrame)
         {
-            tryBuildThisFrame = false; 
+            tryBuildThisFrame = false;
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
             PlaceGhostStructure();
         }
@@ -172,7 +171,7 @@ public class BuildingSystem : MonoBehaviour
     private void EnterBuildMode()
     {
         isBuildingMode = true;
-        currentRotationAngle = 0f; 
+        currentRotationAngle = 0f;
         if (buildMenuPanel != null) buildMenuPanel.SetActive(true);
     }
 
@@ -203,7 +202,7 @@ public class BuildingSystem : MonoBehaviour
         {
             foreach (var costEntry in totalCosts)
                 InventoryManager.Instance.RemoveItem(costEntry.Key, costEntry.Value);
-            
+
             foreach (var ghost in ghostBuildings)
             {
                 ghost.GetComponent<SpriteRenderer>().color = Color.white;
@@ -218,7 +217,7 @@ public class BuildingSystem : MonoBehaviour
 
         ghostBuildings.Clear();
         ghostBuildingData.Clear();
-        
+
         isBuildingMode = false;
         currentSelection = null;
         if (buildMenuPanel != null) buildMenuPanel.SetActive(false);
@@ -228,8 +227,8 @@ public class BuildingSystem : MonoBehaviour
     public void SelectBuilding(BuildableItem item)
     {
         currentSelection = item;
-        currentRotationAngle = 0f; 
-        
+        currentRotationAngle = 0f;
+
         DestroyPreviewObject();
         CreatePreviewObject();
     }
@@ -239,7 +238,7 @@ public class BuildingSystem : MonoBehaviour
         if (currentSelection == null) return;
 
         currentPreviewObject = Instantiate(currentSelection.prefab);
-        
+
         Collider2D[] cols = currentPreviewObject.GetComponentsInChildren<Collider2D>();
         foreach (Collider2D col in cols) col.enabled = false;
 
@@ -270,7 +269,7 @@ public class BuildingSystem : MonoBehaviour
 
         SpriteRenderer[] renderers = currentPreviewObject.GetComponentsInChildren<SpriteRenderer>();
         bool canBuild = CanBuildHere(gridPos);
-        
+
         foreach (SpriteRenderer sr in renderers)
         {
             sr.color = canBuild ? new Color(0, 1, 0, 0.5f) : new Color(1, 0, 0, 0.5f);
@@ -285,12 +284,12 @@ public class BuildingSystem : MonoBehaviour
 
         Quaternion spawnRotation = Quaternion.Euler(0, 0, currentRotationAngle);
         GameObject ghostObj = Instantiate(currentSelection.prefab, buildPos, spawnRotation);
-        
+
         SpriteRenderer ghostSprite = ghostObj.GetComponent<SpriteRenderer>();
-        if (ghostSprite != null) ghostSprite.color = new Color(1f, 1f, 1f, 0.5f); 
-        
+        if (ghostSprite != null) ghostSprite.color = new Color(1f, 1f, 1f, 0.5f);
+
         Collider2D ghostCol = ghostObj.GetComponent<Collider2D>();
-        if (ghostCol != null) ghostCol.enabled = false; 
+        if (ghostCol != null) ghostCol.enabled = false;
 
         ghostBuildings.Add(ghostObj);
         ghostBuildingData.Add(currentSelection);
@@ -321,20 +320,20 @@ public class BuildingSystem : MonoBehaviour
     private Vector2 GetMouseGridPosition()
     {
         Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
-        
+
         if (groundTilemap != null)
         {
             Vector3Int cellPosition = groundTilemap.WorldToCell(mouseWorldPos);
             Vector3 cellCenterPos = groundTilemap.GetCellCenterWorld(cellPosition);
-            
+
             bool isRotatedVertically = Mathf.Abs(currentRotationAngle) == 90f || Mathf.Abs(currentRotationAngle) == 270f;
-            
+
             if (isRotatedVertically)
             {
                 cellCenterPos.x += (groundTilemap.cellSize.x / 2f);
                 cellCenterPos.y += (groundTilemap.cellSize.y / 2f);
             }
-            
+
             return new Vector2(cellCenterPos.x, cellCenterPos.y);
         }
         else
@@ -347,10 +346,16 @@ public class BuildingSystem : MonoBehaviour
 
     private bool CanBuildHere(Vector2 position)
     {
-        if (Vector2.Distance(transform.position, position) > maxBuildDistance) return false;
-        
+        // Only allow building inside the safe zone around the map center
+        if (MapGenerator.Instance != null)
+        {
+            Vector2 mapCenter = MapGenerator.Instance.MapCenterWorld;
+            float safeRadius = MapGenerator.Instance.SafeZoneWorldRadius;
+            if (Vector2.Distance(mapCenter, position) > safeRadius) return false;
+        }
+
         BoxCollider2D prefabCollider = currentSelection.prefab.GetComponent<BoxCollider2D>();
-        
+
         if (prefabCollider != null)
         {
             Vector2 boxSize = prefabCollider.size;
@@ -360,10 +365,7 @@ public class BuildingSystem : MonoBehaviour
             foreach (var ghost in ghostBuildings)
             {
                 BoxCollider2D ghostCol = ghost.GetComponent<BoxCollider2D>();
-                if (ghostCol != null)
-                {
-                    if (Vector2.Distance(ghost.transform.position, position) < 0.1f) return false;
-                }
+                if (ghostCol != null && Vector2.Distance(ghost.transform.position, position) < 0.1f) return false;
             }
         }
         else
@@ -377,7 +379,7 @@ public class BuildingSystem : MonoBehaviour
             }
         }
 
-        return true; 
+        return true;
     }
 }
 

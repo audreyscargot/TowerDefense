@@ -102,10 +102,17 @@ public class EnemyAI : MonoBehaviour
 
     void DetectNewTarget(string newTarget)
     {
-        target = GameObject.Find(newTarget);
+        GameObject found = GameObject.Find(newTarget);
+        if (found == null)
+        {
+            Debug.LogWarning($"EnemyAI: Could not find target named '{newTarget}'");
+            return;
+        }
+        target = found;
         targetTransform = target.transform;
         agent.SetDestination(targetTransform.position);
     }
+
 
     public void TakeDamage(float amount)
     {

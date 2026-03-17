@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static Action OnDayStarted;
 
     //Settings
-    private float PlayerLightIntensity = 50;
+    public float PlayerLightIntensity = 50;
 
     //References
     public GameObject Player;

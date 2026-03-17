@@ -1,14 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour
 {
     public static MapGenerator Instance { get; private set; }
 
     [Header("Map Settings")]
-    public int mapSize = 10;
+    public int mapSize = 50;
     public Tilemap groundTilemap;
+
+    [Header("Safe Zone")]
+    public float SafeZoneWorldRadius = 5f;
+    public Vector2 MapCenterWorld => groundTilemap.GetCellCenterWorld(Vector3Int.zero);
 
     [Header("Category 1: Base Tiles (Ground)")]
     public TileBase[] baseTiles;
@@ -19,7 +23,9 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Category 3: Core Structures")]
     public GameObject basePrefab;
-    public GameObject aiSpawnPointPrefab;
+
+    [Header("NavMesh")]
+    public NavMesh navMeshBaker;
 
     private bool[,] obstacleGrid;
     private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
@@ -60,7 +66,6 @@ public class MapGenerator : MonoBehaviour
                     groundTilemap.SetTile(gridPosition, baseTiles[tileIndex]);
                 }
 
-                // Keep center clear for the base
                 if (x == 0 && y == 0)
                 {
                     obstacleGrid[arrayX, arrayY] = false;
@@ -85,11 +90,21 @@ public class MapGenerator : MonoBehaviour
         if (basePrefab != null)
         {
             Vector3 centerWorld = groundTilemap.GetCellCenterWorld(Vector3Int.zero);
-            Instantiate(basePrefab, centerWorld, Quaternion.identity, transform);
+            GameObject baseObj = Instantiate(basePrefab, centerWorld, Quaternion.identity, transform);
+            baseObj.name = "Base";
         }
+
+        // Bake NavMesh AFTER map is fully generated
+        if (navMeshBaker != null)
+            navMeshBaker.BakeNavMesh();
+        else
+            Debug.LogWarning("MapGenerator: navMeshBaker is not assigned!");
+
+        // Spawn first day indicators — same logic as every subsequent day
+        if (EnemySpawner.Instance != null)
+            EnemySpawner.Instance.PrepareForNewDay();
     }
 
-    // Returns a world position snapped to a random tile on the map edge
     public Vector3 GetRandomEdgeWorldPosition()
     {
         int halfSize = mapSize / 2;
