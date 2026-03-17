@@ -33,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
     {
         ProcessInput();
         Animate();
+        Test();
+        Test2();
     }
     void FixedUpdate()
     {
@@ -104,5 +106,25 @@ public class PlayerMovement : MonoBehaviour
     void ResetAttack()
     {
         canAttack = true;
+    }
+
+    //TEST FUNCTION TODO : DELETE
+    public static void Test()
+    {
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+        {
+            GameManager.OnDayStarted.Invoke();
+        }
+    }
+
+    public PlayerFood food;
+    
+    public void Test2()
+    {
+        Debug.Log("Test2");
+        if (Keyboard.current.cKey.wasPressedThisFrame)
+        {
+            food.ConsumeFood();
+        }
     }
 }

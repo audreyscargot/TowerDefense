@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FoodSpots : Interactable
 {
-    bool isHarvestable = true;
+    bool isHarvestable = false;
     public int daysToGrow;
     private int currentDay = -1;
 
@@ -20,12 +20,14 @@ public class FoodSpots : Interactable
     }
     void Grow()
     {
-        Debug.Log("Grow");
-        currentDay++;
-        currentSprite.sprite = plantDays[currentDay];
-        if (currentDay >= daysToGrow)
+        if (currentDay < daysToGrow)
         {
-            isHarvestable = true;
+            currentDay++;
+            currentSprite.sprite = plantDays[currentDay-1];
+            if (currentDay >= daysToGrow)
+            {
+                isHarvestable = true;
+            }
         }
     }
 
