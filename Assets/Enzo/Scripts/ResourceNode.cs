@@ -54,6 +54,7 @@ public class ResourceNode : MonoBehaviour
             }
         }
 
+        //TODO : Ajouter f° pour diminuer player energy 
         Destroy(gameObject);
     }
 

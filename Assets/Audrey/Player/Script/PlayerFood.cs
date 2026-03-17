@@ -6,6 +6,7 @@ public class PlayerFood : MonoBehaviour
     
     [SerializeField] private int maxFood;
     public int currentFood;
+    
 
     public InventoryManager inventory;
     

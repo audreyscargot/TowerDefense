@@ -1,3 +1,4 @@
+using Audrey.Player.Script;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,8 +10,12 @@ public class UIManager : MonoBehaviour
     private Label foodLabel;
     private Label woodLabel;
     private Label stoneLabel;
+    private Label energyLabel;
+    private Label healthLabel;
     
     private InventoryManager inventoryManager;
+    private PlayerHealth playerHealth;
+    private PlayerFood playerFood;
 
     private void Awake()
     {
@@ -26,21 +31,27 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
-        Debug.Log(Instance ? Instance : "Null");
+        playerHealth = GameObject.Find("Player").GetComponent<PlayerHealth>();
+        playerFood = GameObject.Find("Player").GetComponent<PlayerFood>();
+        Debug.Log(playerHealth ? playerHealth : "Null");
+        Debug.Log(playerFood ? playerFood : "Null");
         
         //Label init
         foodLabel = uiDocument.rootVisualElement.Q<Label>("FoodText");
-        Debug.Log("the food Label is " + foodLabel);
         UpdateText("Food");
         woodLabel = uiDocument.rootVisualElement.Q<Label>("WoodText");
-        Debug.Log("the wood Label is " + woodLabel);
         UpdateText("Wood");
         stoneLabel = uiDocument.rootVisualElement.Q<Label>("StoneText");
         UpdateText("Stone");
+        healthLabel = uiDocument.rootVisualElement.Q<Label>("HealthText");
+        UpdateText("Health");
+        energyLabel = uiDocument.rootVisualElement.Q<Label>("EnergyText");
+        Debug.Log(energyLabel);
+        UpdateText("Energy");
     }
 
     
-    //Resources label update
+    //Resources resource label update
     public void UpdateText(string resourceName)
     {
         switch (resourceName)
@@ -54,8 +65,13 @@ public class UIManager : MonoBehaviour
             case "Stone":
                 stoneLabel.text = inventoryManager.findInInventory("Stone");
                 break;
-            default:
-                Debug.Log("default");
+            case "Energy":
+                Debug.Log(playerFood.currentFood);
+                Debug.Log(energyLabel);
+                energyLabel.text = playerFood.currentFood.ToString();
+                break;
+            case "Health":
+                healthLabel.text = playerHealth.currentHealth.ToString();
                 break;
         }
     }
