@@ -23,7 +23,7 @@ public class Interactable : MonoBehaviour
         );
     }
     
-    protected void OnTriggerEnter2D(Collider2D other)
+    public virtual void OnTriggerEnter2D(Collider2D other)
     {
         InteractionPlayer = other.GetComponent<InteractionPlayer>();
 
@@ -35,7 +35,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    protected void OnTriggerExit2D(Collider2D other)
+    public virtual void OnTriggerExit2D(Collider2D other)
     {
         if (InteractionPlayer)
         {

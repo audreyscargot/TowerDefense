@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ahmetcan/GameOver/GameOverScene.unity
     guid: 364bda9f9ba36a5479e44a0e8c3c7731
+  - enabled: 1
+    path: Assets/Audrey/AudreyScene.unity
+    guid: 10dbe3a31a563074bac7ce0a51cac0d2
+  - enabled: 1
+    path: Assets/ahmetcan/MainMenu/MainMenuScene.unity
+    guid: c661ca7feab981941b8aa68a51365609
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -22,6 +22,7 @@ public class ButtonVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         InterfaceHandler.MoveCursor(TargetLoc,IconImage);
         BackgroundImage.sprite = HoverBackground;
+        
     }
 
     public void OnPointerExit(PointerEventData eventData)

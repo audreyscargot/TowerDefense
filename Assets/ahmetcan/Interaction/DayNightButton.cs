@@ -4,7 +4,7 @@ using UnityEngine;
 public class DayNightButton : Interactable
 {
     public GameObject GameManagerObj;
-    public GameManager GameManager;
+    private GameManager GameManager;
 
     public void Start()
     {
@@ -19,6 +19,20 @@ public class DayNightButton : Interactable
     }
 
     private bool spriteWasVisible = false;
+
+
+    public override void OnTriggerEnter2D(Collider2D other)
+    {
+        InteractionPlayer = other.GetComponent<InteractionPlayer>();
+
+        if (InteractionPlayer)
+        {
+            EnteredPlayer = InteractionPlayer;
+            if (InteractionPlayer.InteractionObjScript == null && spawnedObject == null && GameManager.isDay)
+                ShowInteractButton();
+            Debug.Log("qsdsqd");
+        }
+    }
 
     public override  void Update()
     {
@@ -35,7 +49,7 @@ public class DayNightButton : Interactable
                 }
                 else
                 {
-                    if (GameManager.TimelineAnimating == false && !spriteWasVisible)
+                    if (GameManager.TimelineAnimating == false && !spriteWasVisible && GameManager.isDay)
                     {
                         sr.enabled = true;
                         spriteWasVisible = true;
