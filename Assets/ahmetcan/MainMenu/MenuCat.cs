@@ -33,7 +33,7 @@ public class MenuCat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     private bool MouseIn = false;
     private Vector2 lastMousePos;
-    public float moveThreshold = 10f;
+    public float moveThreshold = 5;
 
     private bool toggle = false;
     private bool Touched = false;
@@ -52,7 +52,7 @@ public class MenuCat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             msg.text += c;
             yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         CanChangeImage = true;
         SpeakFrame.SetActive(false);
         if (!MouseIn) BackgroundImage.sprite = UnhoverBackground;

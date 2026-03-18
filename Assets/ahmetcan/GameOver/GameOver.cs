@@ -1,8 +1,33 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 public class GameOver : MonoBehaviour
 {
+  public GameObject Page1;
+  public GameObject Page2;
+  public GameObject NameText;
   public void PlayGame() { SceneManager.LoadSceneAsync(2);} // main game map
   
   public void ReturnToMainMenu(){ SceneManager.LoadSceneAsync(3);} // main menu map
+
+  public void ReturnToPage1()
+  {
+    Page1.SetActive(true);
+    Page2.SetActive(false);
+  }
+  public void ToPage2()
+  {
+    Page1.SetActive(false);
+    Page2.SetActive(true);
+  }
+  
+  public void PlayerConfirmedName()
+  {
+    TMP_InputField input = NameText.GetComponent<TMP_InputField>();
+    SaveAndLoad savecomp = gameObject.GetComponent<SaveAndLoad>();
+    savecomp.Save(input.text, 0);
+    input.text = "Confirmed";
+  }
 }

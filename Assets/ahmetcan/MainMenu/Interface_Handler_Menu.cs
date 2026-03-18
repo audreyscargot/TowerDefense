@@ -19,15 +19,18 @@ public class Interface_Handler_Menu : MonoBehaviour
 
         IconImage = Icon.GetComponent<Image>();
     }
-
+    public void CatImage(Sprite TargetImage)
+    {
+        IconImage.sprite = TargetImage;
+    }
+    
     public void MoveCursor(float TargetLoc, Sprite TargetImage)
     {
         ShowHide(true);
         Vector3 pos = Cursor.transform.localPosition;
         pos.y = TargetLoc;
         Cursor.transform.localPosition = pos;
-        Debug.Log(Cursor.transform.localPosition);
-        IconImage.sprite = TargetImage;
+        CatImage(TargetImage);
     }
 
     public void ShowHide(bool Show)

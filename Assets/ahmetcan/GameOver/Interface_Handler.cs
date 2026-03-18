@@ -20,13 +20,13 @@ public class Interface_Handler : MonoBehaviour
         IconImage = Icon.GetComponent<Image>();
     }
 
+    
     public void MoveCursor(float TargetLoc, Sprite TargetImage)
     {
         ShowHide(true);
         Vector3 pos = Cursor.transform.localPosition;
         pos.y = TargetLoc;
         Cursor.transform.localPosition = pos;
-        Debug.Log(Cursor.transform.localPosition);
         IconImage.sprite = TargetImage;
     }
 
@@ -39,4 +39,6 @@ public class Interface_Handler : MonoBehaviour
             IconImage.sprite = NoHoverIcon;
         }
     }
+
+  
 }
