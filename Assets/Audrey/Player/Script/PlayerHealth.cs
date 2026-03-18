@@ -18,10 +18,15 @@ namespace Audrey.Player.Script
             Debug.Log(currentHealth);
             if (currentHealth <= 0)
             {
-                //GameManager game over
-                SceneManager.LoadSceneAsync(1);
-                Debug.Log("DEAD");
+                Death();
             }
+        }
+
+        public virtual void Death()
+        {
+            //GameManager game over
+            SceneManager.LoadSceneAsync(1);
+            Debug.Log("DEAD");
         }
     }
 }

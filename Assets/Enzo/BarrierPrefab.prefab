@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1383299295536872112}
   - component: {fileID: 8118871567765706376}
   - component: {fileID: 5751414291618770876}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: BarrierPrefab
-  m_TagString: Untagged
+  m_TagString: Barrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,7 +137,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -167,3 +167,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemInteract
   IconOffset: {x: 0, y: 0}
   SpawnPrefab: {fileID: 6256672702632077042, guid: cb8bd43c0961ff3408fca38474bbe98b, type: 3}
+  itemName: Wood
+  amount: 1

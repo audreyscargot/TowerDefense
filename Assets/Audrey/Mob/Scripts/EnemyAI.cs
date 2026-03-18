@@ -5,7 +5,6 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     public GameObject target;
-    public Transform targetTransform;
     public float health;
     
     public GameObject player;
@@ -22,7 +21,9 @@ public class EnemyAI : MonoBehaviour
 
     private float attackCooldown = 1.0f;
     private float tick;
-    
+
+    private Object[] attackables;
+    private Transform[] attackablesPos;
     
     void Start()
     {
@@ -31,7 +32,6 @@ public class EnemyAI : MonoBehaviour
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         
-        // player = GameObject.FindGameObjectWithTag("Player");
         DetectNewTarget("Base");
     }
 
@@ -41,6 +41,27 @@ public class EnemyAI : MonoBehaviour
         {
             Attack();
         }
+    }
+
+    private string GetAttackables()
+    {
+        FindObjectsInactive inactives = new FindObjectsInactive();
+        FindObjectsSortMode sortMode = FindObjectsSortMode.None;
+        attackables = FindObjectsByType(typeof(PlayerHealth), inactives, sortMode);
+        GameObject closestObject = null;
+        float closestDistance = float.MaxValue;
+        for (int i = 0; i < attackables.Length; i++)
+        {
+            GameObject attackable = (GameObject)attackables[i];
+            float dist = Vector3.Distance(attackable.transform.position, transform.position);
+            if (dist < closestDistance)
+            {
+                closestDistance = dist;
+                closestObject = attackable;
+            }
+        }
+
+        return closestObject.name;
     }
 
     //Check if player is visible (if visible target change to player, else target is base
@@ -100,6 +121,16 @@ public class EnemyAI : MonoBehaviour
         canAttack = true;
     }
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("OnTriggerEnter2D");
+        if (collision.CompareTag("Attackable"))
+        {
+            DetectNewTarget(collision.name);
+            Debug.Log("AAAAAAAAAAAAH" + collision.name);
+        }
+    }
+
     void DetectNewTarget(string newTarget)
     {
         GameObject found = GameObject.Find(newTarget);
@@ -109,8 +140,22 @@ public class EnemyAI : MonoBehaviour
             return;
         }
         target = found;
-        targetTransform = target.transform;
-        agent.SetDestination(targetTransform.position);
+        if (agent.SetDestination(target.transform.position))
+        {
+            
+        }
+    }
+
+    //Check if Target has reachable Path;
+    bool CheckReachable()
+    {
+        NavMeshPath path = new NavMeshPath();
+        if(agent.CalculatePath(target.transform.position, path) &&  path.status == NavMeshPathStatus.PathComplete)
+        {
+            agent.SetPath(path);
+            return true;
+        }
+        return false;
     }
 
 

@@ -27,14 +27,16 @@ public class PlayerFood : MonoBehaviour
     void Start()
     {
         currentFood = maxFood;
-        UIManager.Instance.UpdateText("Energy");
+        if (UIManager.Instance)
+        {
+            UIManager.Instance.UpdateText("Energy");
+        }
     }
     
     public void ChangeFood(int amount)
     {
         currentFood = Mathf.Clamp(currentFood + amount, 0, maxFood);
         canAction = currentFood > 0;
-        Debug.Log("current food: " + currentFood);
         UIManager.Instance.UpdateText("Food");
         UIManager.Instance.UpdateText("Energy");
     }

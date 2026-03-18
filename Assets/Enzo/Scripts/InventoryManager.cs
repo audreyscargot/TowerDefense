@@ -49,10 +49,8 @@ public class InventoryManager : MonoBehaviour
 
     public string findInInventory(string itemName)
     {
-        Debug.Log(itemName);
         if (inventory.ContainsKey(itemName))
         {
-            Debug.Log("found");
             return inventory[itemName].ToString();
         }
         return 0.ToString();
