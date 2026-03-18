@@ -6,7 +6,7 @@ namespace Audrey.Player.Script
     {
         public float maxHealth;
         public float currentHealth;
-    
+        public GameObject GameManagerObj;
         void Start()
         {
             currentHealth = maxHealth;
@@ -25,6 +25,10 @@ namespace Audrey.Player.Script
         public virtual void Death()
         {
             //GameManager game over
+            GameManager GM = GameManagerObj.GetComponent<GameManager>(); 
+            
+            SaveAndLoad SV = gameObject.GetComponent<SaveAndLoad>();
+            SV.SetDays(GM.Days);
             SceneManager.LoadSceneAsync(1);
             Debug.Log("DEAD");
         }

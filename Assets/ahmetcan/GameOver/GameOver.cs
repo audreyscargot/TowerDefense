@@ -8,6 +8,7 @@ public class GameOver : MonoBehaviour
   public GameObject Page1;
   public GameObject Page2;
   public GameObject NameText;
+  private bool Confirmed = false;
   public void PlayGame() { SceneManager.LoadSceneAsync(2);} // main game map
   
   public void ReturnToMainMenu(){ SceneManager.LoadSceneAsync(3);} // main menu map
@@ -25,9 +26,13 @@ public class GameOver : MonoBehaviour
   
   public void PlayerConfirmedName()
   {
+    if (Confirmed) return;
+    Confirmed = true;
     TMP_InputField input = NameText.GetComponent<TMP_InputField>();
     SaveAndLoad savecomp = gameObject.GetComponent<SaveAndLoad>();
     savecomp.Save(input.text, 0);
-    input.text = "Confirmed";
+    input.text = "You Survived " + savecomp.GetDays() + " Day";
+    input.interactable = false;
+    
   }
 }

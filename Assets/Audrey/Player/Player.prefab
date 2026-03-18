@@ -51,6 +51,7 @@ GameObject:
   - component: {fileID: 9222122608650630997}
   - component: {fileID: 5590180322323784399}
   - component: {fileID: 3487309617173683935}
+  - component: {fileID: 5556644714803798963}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -281,6 +282,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9a947bc9-561e-4d0a-9cb4-85c3d29038d2
     m_ActionName: 'Player/Interact[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77c6a52f-f272-44bd-82b0-d153463af19c
+    m_ActionName: 'Player/ScrollWheel[/Mouse/scroll/down,/Mouse/scroll/up]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -459,7 +464,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
   SwitchInput: {fileID: -2739589644003106764, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
+  scrollInput: {fileID: 0}
   CamObj: {fileID: 0}
+  scrollSensitivity: 1
+  minZoom: 2
+  zoomLerpSpeed: 8
   TimelineAnimating: 0
 --- !u!95 &3487309617173683935
 Animator:
@@ -483,3 +492,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5556644714803798963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4182699795041694585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e17f9b2ed8dc5ff449b37d06d25a7ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveAndLoad
+  textPrefab: {fileID: 0}
+  parentObjectScore: {fileID: 0}

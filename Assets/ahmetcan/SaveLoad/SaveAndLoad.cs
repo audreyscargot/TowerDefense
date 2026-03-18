@@ -19,7 +19,7 @@ public class PlayerList
 public class SaveAndLoad : MonoBehaviour
 {
   string key = "PlayerList";
-
+  private static float Days;
   public void Save(string username, float score)
   {
     PlayerList playerList = Load();
@@ -30,7 +30,7 @@ public class SaveAndLoad : MonoBehaviour
     {
       if (player.username == username)
       {
-        player.score = score;
+        player.score = Days;
         found = true;
         break;
       }
@@ -40,7 +40,7 @@ public class SaveAndLoad : MonoBehaviour
     {
       PlayerData newPlayer = new PlayerData();
       newPlayer.username = username;
-      newPlayer.score = score;
+      newPlayer.score = Days;
       playerList.players.Add(newPlayer);
     }
 
@@ -74,5 +74,15 @@ public class SaveAndLoad : MonoBehaviour
       TMP_Text text = obj.GetComponent<TMP_Text>();
       text.text = player.username + " : " + player.score;
     }
+  }
+
+  public void SetDays(float _Days)
+  {
+    Days = _Days;
+  }
+  
+  public float GetDays()
+  {
+    return Days;
   }
 }
