@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 1452507964590582268}
   - component: {fileID: 8939650802963280848}
   - component: {fileID: 2888406539084445062}
+  - component: {fileID: 5535153005868568527}
   m_Layer: 0
-  m_Name: FoodSpot
+  m_Name: CraftableFood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1864700150, guid: 4a0f76af00093e549b223560f0c0a2d5, type: 3}
+  m_Sprite: {fileID: -8097741200915394387, guid: 540390061bb42534c8bf3960b45d748e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -107,11 +108,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FoodSpots
   IconOffset: {x: 0, y: 0}
   SpawnPrefab: {fileID: 0}
-  daysToGrow: 3
+  daysToGrow: 2
   plantDays:
-  - {fileID: -1864700150, guid: 4a0f76af00093e549b223560f0c0a2d5, type: 3}
-  - {fileID: -141700207, guid: 4a0f76af00093e549b223560f0c0a2d5, type: 3}
-  - {fileID: 1370267030, guid: 4a0f76af00093e549b223560f0c0a2d5, type: 3}
+  - {fileID: 5822373649741285269, guid: 540390061bb42534c8bf3960b45d748e, type: 3}
+  - {fileID: -4235080287930492418, guid: 540390061bb42534c8bf3960b45d748e, type: 3}
+  currentSprite: {fileID: 1452507964590582268}
   dropItemPrefab: {fileID: 864320956031860081, guid: 99d71423984f625468ad614e0e35e481, type: 3}
   dropCount: 2
 --- !u!61 &2888406539084445062
@@ -152,7 +153,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.42666668, y: 0.4}
+    oldSize: {x: 0.28, y: 0.28}
     newSize: {x: 0.42666668, y: 0.4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -160,3 +161,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.42666668, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &5535153005868568527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634115565453277484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc6abfed75294b629873c65bb09575e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Upgradeable
+  canBeUpgraded: 0
+  levels: []
+  OnLevelChanged:
+    m_PersistentCalls:
+      m_Calls: []

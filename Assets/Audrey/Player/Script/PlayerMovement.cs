@@ -1,5 +1,8 @@
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 
@@ -23,6 +26,11 @@ public class PlayerMovement : MonoBehaviour
 
     public GameObject rotateForAim;
     
+    public Camera mainCam;
+    public InputActionReference pointerPositionAction;
+    private Vector2 currentMouseScreenPos;
+    
+    
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -35,6 +43,8 @@ public class PlayerMovement : MonoBehaviour
         Animate();
         Test();
         Test2();
+        if (pointerPositionAction != null)
+            currentMouseScreenPos = pointerPositionAction.action.ReadValue<Vector2>();
     }
     void FixedUpdate()
     {
@@ -50,21 +60,22 @@ public class PlayerMovement : MonoBehaviour
     //Make Rotation for linetrace aim
     private void RotateInDirection()
     {
-        if (m_moveInput != Vector2.zero)
+        Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2 mouseFixedPos = new Vector2(mouseWorldPos.x, -mouseWorldPos.y);
+        
+        if (mouseFixedPos != Vector2.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(transform.forward, m_moveInput);
+            Quaternion targetRotation = Quaternion.LookRotation( mouseFixedPos, transform.up);
             Quaternion rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             
             rotateForAim.transform.SetPositionAndRotation(transform.position, rotation);
-        }
+        }  
     }
 
     //Functions for sprite animation
     void ProcessInput()
     {
         m_moveInput.Normalize();
-        float moveX = rotateForAim.transform.up.x;
-        float moveY = rotateForAim.transform.up.y;
         if ((m_moveInput.x != 0 || m_moveInput.y != 0))
         {
             lastMoveDirection = m_moveInput; 
@@ -85,7 +96,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canAttack)
         {
-            RaycastHit2D hit = Physics2D.CircleCast(rotateForAim.transform.position, 0.5f, rotateForAim.transform.up, attackRange, layerMask);
+            Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
+            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.5f, mouseWorldPos,attackRange,layerMask);
+            Debug.Log(hit ? hit.collider : null);
             EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
             if (hitEnemy)
             {
@@ -100,6 +113,17 @@ public class PlayerMovement : MonoBehaviour
             }
             canAttack =  false;
             Invoke("ResetAttack", attackCooldown);
+        }
+    }
+    
+    void OnDrawGizmos()
+    {
+        if (mainCam != null)
+        {
+            Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
+            //DEBUG TODO DELETE
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position,mouseWorldPos); 
         }
     }
 

@@ -4,27 +4,29 @@ public class FoodSpots : Interactable
 {
     bool isHarvestable = false;
     public int daysToGrow;
-    private int currentDay = -1;
+    private int currentDay = 0;
 
     public Sprite[] plantDays;
 
-    private SpriteRenderer currentSprite;
+    public SpriteRenderer currentSprite;
     
     public GameObject dropItemPrefab;
     public int dropCount;
 
     void Start()
     {
-        currentSprite = GetComponent<SpriteRenderer>();
-        
         GameManager.OnDayStarted += Grow;
     }
     void Grow()
     {
         if (currentDay < daysToGrow)
         {
+            Debug.Log(currentSprite);
             currentDay++;
-            currentSprite.sprite = plantDays[currentDay-1];
+            if (plantDays[currentDay-1] != null && currentSprite)
+            {
+                currentSprite.sprite = plantDays[currentDay-1];
+            }
             if (currentDay >= daysToGrow)
             {
                 isHarvestable = true;
