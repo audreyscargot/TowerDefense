@@ -2,6 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+[System.Serializable]
+public class ResourcePrefabEntry
+{
+    public GameObject prefab;
+    [Range(0f, 1f)] public float spawnThreshold = 0.65f;
+    [Range(0f, 1f)] public float noiseScale = 0.15f;
+    [Range(0f, 1f)] public float respawnChancePerDay = 0.3f;
+}
+
 public class MapGenerator : MonoBehaviour
 {
     public static MapGenerator Instance { get; private set; }
@@ -19,8 +28,7 @@ public class MapGenerator : MonoBehaviour
     public TileBase[] baseTiles;
 
     [Header("Category 2: Resource Objects")]
-    public GameObject[] resourcePrefabs;
-    [Range(0f, 1f)] public float resourceSpawnChance = 0.15f;
+    public ResourcePrefabEntry[] resourcePrefabs;
 
     [Header("Category 3: Core Structures")]
     public GameObject basePrefab;
@@ -31,11 +39,23 @@ public class MapGenerator : MonoBehaviour
     private bool[,] obstacleGrid;
     private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
 
+    private struct DestroyedNode
+    {
+        public Vector3 worldPosition;
+        public int prefabIndex;
+    }
+    private List<DestroyedNode> destroyedNodes = new List<DestroyedNode>();
+
+    private Vector2[] resourceNoiseSeeds;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
+
+    void OnEnable()  { GameManager.OnDayStarted += RespawnResources; }
+    void OnDisable() { GameManager.OnDayStarted -= RespawnResources; }
 
     void Start()
     {
@@ -48,9 +68,14 @@ public class MapGenerator : MonoBehaviour
 
         obstacleGrid = new bool[mapSize, mapSize];
         obstacleCoordinates.Clear();
+        destroyedNodes.Clear();
 
-        float seedX = Random.Range(0f, 10000f);
-        float seedY = Random.Range(0f, 10000f);
+        resourceNoiseSeeds = new Vector2[resourcePrefabs.Length];
+        for (int i = 0; i < resourcePrefabs.Length; i++)
+            resourceNoiseSeeds[i] = new Vector2(Random.Range(0f, 10000f), Random.Range(0f, 10000f));
+
+        float tileSeedX = Random.Range(0f, 10000f);
+        float tileSeedY = Random.Range(0f, 10000f);
 
         for (int x = -halfSize; x < halfSize; x++)
         {
@@ -62,19 +87,13 @@ public class MapGenerator : MonoBehaviour
 
                 if (baseTiles != null && baseTiles.Length > 0)
                 {
-                    float noiseValue = Mathf.PerlinNoise(x + seedX, y + seedY);
+                    float noiseValue = Mathf.PerlinNoise(x + tileSeedX, y + tileSeedY);
                     int tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0, baseTiles.Length - 1);
                     groundTilemap.SetTile(gridPosition, baseTiles[tileIndex]);
                 }
 
-                // Skip center tile (base placement)
-                if (x == 0 && y == 0)
-                {
-                    obstacleGrid[arrayX, arrayY] = false;
-                    continue;
-                }
+                if (x == 0 && y == 0) { obstacleGrid[arrayX, arrayY] = false; continue; }
 
-                // Skip resource spawning inside the safe zone
                 Vector3 worldPos = groundTilemap.GetCellCenterWorld(gridPosition);
                 if (Vector2.Distance(worldPos, MapCenterWorld) <= SafeZoneWorldRadius)
                 {
@@ -82,36 +101,93 @@ public class MapGenerator : MonoBehaviour
                     continue;
                 }
 
-                if (resourcePrefabs != null && resourcePrefabs.Length > 0 && Random.value < resourceSpawnChance)
+                bool spawned = false;
+                for (int i = 0; i < resourcePrefabs.Length; i++)
                 {
-                    Instantiate(resourcePrefabs[Random.Range(0, resourcePrefabs.Length)], worldPos, Quaternion.identity, transform);
-                    obstacleGrid[arrayX, arrayY] = true;
-                    obstacleCoordinates.Add(new Vector2Int(x, y));
+                    ResourcePrefabEntry entry = resourcePrefabs[i];
+                    float noise = Mathf.PerlinNoise(
+                        x * entry.noiseScale + resourceNoiseSeeds[i].x,
+                        y * entry.noiseScale + resourceNoiseSeeds[i].y
+                    );
+
+                    if (noise > entry.spawnThreshold)
+                    {
+                        SpawnResourceNode(i, worldPos);
+                        obstacleGrid[arrayX, arrayY] = true;
+                        obstacleCoordinates.Add(new Vector2Int(x, y));
+                        spawned = true;
+                        break;
+                    }
                 }
-                else
-                {
-                    obstacleGrid[arrayX, arrayY] = false;
-                }
+
+                if (!spawned) obstacleGrid[arrayX, arrayY] = false;
             }
         }
 
-        // Place base at map center
         if (basePrefab != null)
-        {
-            Vector3 centerWorld = groundTilemap.GetCellCenterWorld(Vector3Int.zero);
-            GameObject baseObj = Instantiate(basePrefab, centerWorld, Quaternion.identity, transform);
-            baseObj.name = "Base";
-        }
+            Instantiate(basePrefab, groundTilemap.GetCellCenterWorld(Vector3Int.zero), Quaternion.identity, transform).name = "Base";
 
-        // Bake NavMesh AFTER map is fully generated
-        if (navMeshBaker != null)
-            navMeshBaker.BakeNavMesh();
-        else
-            Debug.LogWarning("MapGenerator: navMeshBaker is not assigned!");
+        if (navMeshBaker != null) navMeshBaker.BakeNavMesh();
+        else Debug.LogWarning("MapGenerator: navMeshBaker is not assigned!");
 
-        // Spawn first day indicators — same logic as every subsequent day
         if (EnemySpawner.Instance != null)
             EnemySpawner.Instance.PrepareForNewDay();
+    }
+
+    // Destroys all ResourceNodes within worldRadius of worldPos
+    // Called by EnemySpawner after picking spawn positions
+    public void ClearResourcesNearPosition(Vector3 worldPos, float worldRadius)
+    {
+        ResourceNode[] allNodes = GetComponentsInChildren<ResourceNode>();
+        foreach (ResourceNode node in allNodes)
+        {
+            if (Vector3.Distance(node.transform.position, worldPos) <= worldRadius)
+            {
+                // Don't register as destroyed — we don't want them respawning here
+                Destroy(node.gameObject);
+            }
+        }
+    }
+
+    private GameObject SpawnResourceNode(int prefabIndex, Vector3 worldPos)
+    {
+        if (resourcePrefabs == null || prefabIndex >= resourcePrefabs.Length) return null;
+
+        GameObject obj = Instantiate(resourcePrefabs[prefabIndex].prefab, worldPos, Quaternion.identity, transform);
+
+        ResourceNode node = obj.GetComponent<ResourceNode>();
+        if (node != null)
+        {
+            node.prefabIndex = prefabIndex;
+            node.spawnPosition = worldPos;
+        }
+
+        return obj;
+    }
+
+    public void OnResourceDestroyed(ResourceNode node)
+    {
+        destroyedNodes.Add(new DestroyedNode
+        {
+            worldPosition = node.spawnPosition,
+            prefabIndex = node.prefabIndex
+        });
+    }
+
+    private void RespawnResources()
+    {
+        List<DestroyedNode> stillDead = new List<DestroyedNode>();
+
+        foreach (DestroyedNode dead in destroyedNodes)
+        {
+            float chance = resourcePrefabs[dead.prefabIndex].respawnChancePerDay;
+            if (Random.value < chance)
+                SpawnResourceNode(dead.prefabIndex, dead.worldPosition);
+            else
+                stillDead.Add(dead);
+        }
+
+        destroyedNodes = stillDead;
     }
 
     public Vector3 GetRandomEdgeWorldPosition()

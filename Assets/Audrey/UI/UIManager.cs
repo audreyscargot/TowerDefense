@@ -22,33 +22,30 @@ public class UIManager : MonoBehaviour
         if (Instance != null && Instance != this)
         {
             Destroy(this);
+            return;
         }
-        else
-        {
-            Instance = this;
-        }
+
+        Instance = this;
+
+        foodLabel   = uiDocument.rootVisualElement.Q<Label>("FoodText");
+        woodLabel   = uiDocument.rootVisualElement.Q<Label>("WoodText");
+        stoneLabel  = uiDocument.rootVisualElement.Q<Label>("StoneText");
+        healthLabel = uiDocument.rootVisualElement.Q<Label>("HealthText");
+        energyLabel = uiDocument.rootVisualElement.Q<Label>("EnergyText");
     }
+
     void Start()
     {
         inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
         playerHealth = GameObject.Find("Player").GetComponent<PlayerHealth>();
         playerFood = GameObject.Find("Player").GetComponent<PlayerFood>();
-        Debug.Log(playerHealth ? playerHealth : "Null");
-        Debug.Log(playerFood ? playerFood : "Null");
-        
-        //Label init
-        foodLabel = uiDocument.rootVisualElement.Q<Label>("FoodText");
+
         UpdateText("Food");
-        woodLabel = uiDocument.rootVisualElement.Q<Label>("WoodText");
         UpdateText("Wood");
-        stoneLabel = uiDocument.rootVisualElement.Q<Label>("StoneText");
         UpdateText("Stone");
-        healthLabel = uiDocument.rootVisualElement.Q<Label>("HealthText");
         UpdateText("Health");
-        energyLabel = uiDocument.rootVisualElement.Q<Label>("EnergyText");
         UpdateText("Energy");
     }
-
     
     //Resources resource label update
     public void UpdateText(string resourceName)
@@ -65,7 +62,8 @@ public class UIManager : MonoBehaviour
                 stoneLabel.text = inventoryManager.findInInventory("Stone");
                 break;
             case "Energy":
-                energyLabel.text = playerFood.currentFood.ToString();
+                if (energyLabel != null && playerFood != null)
+                    energyLabel.text = playerFood.currentFood.ToString();
                 break;
             case "Health":
                 healthLabel.text = playerHealth.currentHealth.ToString();

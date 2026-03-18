@@ -12,6 +12,9 @@ public class EnemySpawner : MonoBehaviour
     public float timeBetweenSpawns = 1.0f;
     public int spawnPointCount = 1;
 
+    [Header("Spawner Clearance")]
+    public float resourceClearRadius = 2f; // world units cleared around each spawn point
+
     [Header("Visuals")]
     public GameObject spawnIndicatorPrefab;
 
@@ -21,8 +24,8 @@ public class EnemySpawner : MonoBehaviour
     private int enemiesAlive = 0;
     private int enemiesToSpawnThisNight = 0;
     private int enemiesSpawnedSoFar = 0;
-    
-    private bool skipFirstDayEvent = true; // MapGenerator already called PrepareForNewDay for day 1
+
+    private bool skipFirstDayEvent = true;
 
     private void Awake()
     {
@@ -42,7 +45,7 @@ public class EnemySpawner : MonoBehaviour
         GameManager.OnDayStarted -= OnDayStartedHandler;
         GameManager.OnNightStarted -= StartNightWave;
     }
-    
+
     private void OnDayStartedHandler()
     {
         if (skipFirstDayEvent) { skipFirstDayEvent = false; return; }
@@ -53,7 +56,6 @@ public class EnemySpawner : MonoBehaviour
     {
         StopAllCoroutines();
 
-        // Destroy previous indicators
         foreach (GameObject indicator in spawnIndicators)
             if (indicator != null) Destroy(indicator);
         spawnIndicators.Clear();
@@ -70,6 +72,9 @@ public class EnemySpawner : MonoBehaviour
             Vector3 edgePos = MapGenerator.Instance.GetRandomEdgeWorldPosition();
             spawnPositions.Add(edgePos);
 
+            // Clear resources around this spawn point
+            MapGenerator.Instance.ClearResourcesNearPosition(edgePos, resourceClearRadius);
+
             if (spawnIndicatorPrefab != null)
                 spawnIndicators.Add(Instantiate(spawnIndicatorPrefab, edgePos, Quaternion.identity));
         }
@@ -79,14 +84,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void StartNightWave()
     {
-        // Indicators stay visible during the night
         if (spawnPositions.Count == 0) return;
         StartCoroutine(StartWaveDelayed());
     }
 
     private IEnumerator StartWaveDelayed()
     {
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(0.5f);
         int currentDay = gameManager != null ? (int)gameManager.Days : 1;
         enemiesToSpawnThisNight = baseEnemiesPerNight + (currentDay * 2);
         enemiesSpawnedSoFar = 0;
@@ -115,4 +119,6 @@ public class EnemySpawner : MonoBehaviour
             gameManager.EndNight();
         }
     }
+
+    public List<Vector3> GetSpawnPositions() => spawnPositions;
 }

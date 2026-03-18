@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8562327807187953574}
   - component: {fileID: 8629917774084211045}
   - component: {fileID: 7520698360292714485}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WeaponPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 882650146421639411}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.288, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -81,17 +81,17 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 12
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 7252706148926139450, guid: 1d11f72618384f44fa6e2d4741f71312, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.44, y: 0.38}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!95 &7520698360292714485
 Animator:
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8073217437778015751}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 3014097419246918124}
   - component: {fileID: 2354268671065390527}
   - component: {fileID: 8737651160644205250}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -305,18 +305,21 @@ MonoBehaviour:
     projectileSpeed: 8
     damage: 1
     baseSprite: {fileID: 21300000, guid: 8b3efcf9a8c0bcc438ca927848a3481a, type: 2}
+    weaponIdleSprite: {fileID: 7252706148926139450, guid: 1d11f72618384f44fa6e2d4741f71312, type: 3}
     weaponAnimator: {fileID: -4494482025817422569, guid: f017dafc80234c04cba618dc62a3bf87, type: 3}
   - detectionRadius: 10
     fireRate: 2
     projectileSpeed: 8
     damage: 2
     baseSprite: {fileID: 21300000, guid: ac19498e7e39e424fbfbc09ed4f336fb, type: 2}
+    weaponIdleSprite: {fileID: 1035047082471798503, guid: 41457e892f1380d4192fb674d0260111, type: 3}
     weaponAnimator: {fileID: -297909741517146880, guid: ef5b2c4165d911a4e95c0b5b61274156, type: 3}
   - detectionRadius: 15
     fireRate: 3
     projectileSpeed: 8
     damage: 3
     baseSprite: {fileID: 21300000, guid: 423056d7707832841a5d439fda8e0937, type: 2}
+    weaponIdleSprite: {fileID: 4223108285959006957, guid: bd210954b8b8b694886bc81cf733027c, type: 3}
     weaponAnimator: {fileID: 8255107083389019057, guid: 8f7889126bba9264abecea45e01a4b1f, type: 3}
   projectilePrefab: {fileID: 1108757344037292107, guid: a299509219eed4c4387291755834b794, type: 3}
   impactEffectPrefab: {fileID: 2832332965234205509, guid: cb9f0da4968dc3049b1febdcb478818b, type: 3}

@@ -9,13 +9,14 @@ public class TowerLevelData
     public float projectileSpeed = 8f;
     public float damage = 10f;
     public Sprite baseSprite;
+    public Sprite weaponIdleSprite;
     public RuntimeAnimatorController weaponAnimator;
 }
 
 public class Tower : MonoBehaviour
 {
     [Header("Level Data")]
-    public List<TowerLevelData> levels; // must match Upgradeable.levels count
+    public List<TowerLevelData> levels;
 
     [Header("References")]
     public GameObject projectilePrefab;
@@ -27,7 +28,9 @@ public class Tower : MonoBehaviour
     public LayerMask enemyLayer;
 
     private SpriteRenderer baseSpriteRenderer;
+    private SpriteRenderer weaponSpriteRenderer;
     private Animator weaponAnimator;
+    private Sprite currentIdleSprite;
     private float fireCooldown = 0f;
 
     private float detectionRadius;
@@ -39,21 +42,26 @@ public class Tower : MonoBehaviour
     void Start()
     {
         baseSpriteRenderer = GetComponent<SpriteRenderer>();
-        weaponAnimator = weaponPivot != null ? weaponPivot.GetComponent<Animator>() : null;
 
-        // Subscribe to upgrade events
+        if (weaponPivot != null)
+        {
+            weaponSpriteRenderer = weaponPivot.GetComponent<SpriteRenderer>();
+            weaponAnimator = weaponPivot.GetComponent<Animator>();
+        }
+
         Upgradeable upgradeable = GetComponent<Upgradeable>();
         if (upgradeable != null) upgradeable.OnLevelChanged.AddListener(OnUpgraded);
 
         ApplyLevelData(0);
         fireCooldown = 1f / fireRate;
-        if (weaponAnimator != null) weaponAnimator.speed = 0f;
+        SetWeaponIdle();
     }
 
     private void OnUpgraded(int newLevel)
     {
         currentLevel = newLevel;
         ApplyLevelData(newLevel);
+        SetWeaponIdle();
     }
 
     void Update()
@@ -64,7 +72,7 @@ public class Tower : MonoBehaviour
 
         if (enemyInRange != null)
         {
-            if (weaponAnimator != null) weaponAnimator.speed = 1f;
+            SetWeaponAttacking();
 
             if (weaponPivot != null)
             {
@@ -82,7 +90,7 @@ public class Tower : MonoBehaviour
         else
         {
             fireCooldown = Mathf.Max(fireCooldown, 0f);
-            if (weaponAnimator != null) weaponAnimator.speed = 0f;
+            SetWeaponIdle();
         }
     }
 
@@ -102,18 +110,34 @@ public class Tower : MonoBehaviour
             projectileScript.Init(damage, currentLevel, impactEffectPrefab);
     }
 
+    private void SetWeaponIdle()
+    {
+        if (weaponAnimator != null) weaponAnimator.speed = 0f;
+        if (weaponSpriteRenderer != null && currentIdleSprite != null)
+            weaponSpriteRenderer.sprite = currentIdleSprite;
+    }
+
+    private void SetWeaponAttacking()
+    {
+        if (weaponAnimator != null) weaponAnimator.speed = 1f;
+    }
+
     private void ApplyLevelData(int level)
     {
         if (levels == null || levels.Count <= level) return;
 
         TowerLevelData data = levels[level];
-        detectionRadius = data.detectionRadius;
-        fireRate = data.fireRate;
-        projectileSpeed = data.projectileSpeed;
-        damage = data.damage;
+        detectionRadius   = data.detectionRadius;
+        fireRate          = data.fireRate;
+        projectileSpeed   = data.projectileSpeed;
+        damage            = data.damage;
+        currentIdleSprite = data.weaponIdleSprite;
 
         if (baseSpriteRenderer != null && data.baseSprite != null)
             baseSpriteRenderer.sprite = data.baseSprite;
+
+        if (weaponSpriteRenderer != null && data.weaponIdleSprite != null)
+            weaponSpriteRenderer.sprite = data.weaponIdleSprite;
 
         if (weaponAnimator != null && data.weaponAnimator != null)
         {
