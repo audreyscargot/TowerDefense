@@ -175,16 +175,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 757149b7bd32cd046b8dedd1b62df7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  target: {fileID: 0}
-  targetTransform: {fileID: 0}
   health: 3
-  player: {fileID: 0}
-  damage: 0
+  damage: 1
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  buildingLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
   rangeOfAttack: 1
   rangeOfSight: 3
+  attackCooldown: 1
+  pathCheckInterval: 0.5
 --- !u!50 &-5624981444934763626
 Rigidbody2D:
   serializedVersion: 5

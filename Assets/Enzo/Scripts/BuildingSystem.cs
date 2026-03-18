@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -328,9 +329,10 @@ public class BuildingSystem : MonoBehaviour
             foreach (var ghost in ghostBuildings)
             {
                 ghost.GetComponent<SpriteRenderer>().color = Color.white;
-                Collider2D col = ghost.GetComponent<Collider2D>();
-                if (col != null) col.enabled = true;
+                foreach (Collider2D col in ghost.GetComponentsInChildren<Collider2D>())
+                    col.enabled = true;
             }
+
         }
         else if (ghostBuildings.Count > 0)
         {
@@ -346,7 +348,6 @@ public class BuildingSystem : MonoBehaviour
         if (buildMenuPanel != null) buildMenuPanel.SetActive(false);
         DestroyPreviewObject();
     }
-
     public void SelectBuilding(BuildableItem item)
     {
         currentSelection = item;
@@ -408,8 +409,8 @@ public class BuildingSystem : MonoBehaviour
         SpriteRenderer ghostSprite = ghostObj.GetComponent<SpriteRenderer>();
         if (ghostSprite != null) ghostSprite.color = new Color(1f, 1f, 1f, 0.5f);
 
-        Collider2D ghostCol = ghostObj.GetComponent<Collider2D>();
-        if (ghostCol != null) ghostCol.enabled = false;
+        foreach (Collider2D col in ghostObj.GetComponentsInChildren<Collider2D>())
+            col.enabled = false;
 
         ghostBuildings.Add(ghostObj);
         ghostBuildingData.Add(currentSelection);

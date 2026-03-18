@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8562327807187953574}
   - component: {fileID: 8629917774084211045}
   - component: {fileID: 7520698360292714485}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WeaponPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8073217437778015751}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,9 +159,11 @@ GameObject:
   - component: {fileID: 3014097419246918124}
   - component: {fileID: 2354268671065390527}
   - component: {fileID: 8737651160644205250}
-  m_Layer: 8
+  - component: {fileID: -3069291006085039790}
+  - component: {fileID: 1818766564789585950}
+  m_Layer: 11
   m_Name: Tower
-  m_TagString: Untagged
+  m_TagString: Attackable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -363,3 +365,32 @@ MonoBehaviour:
   OnLevelChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-3069291006085039790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5880362381162859388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29b6599fde5e4deb96b08b144ff4e4a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingHealth
+  maxHealth: 50
+--- !u!114 &1818766564789585950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5880362381162859388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NavMeshPlus::NavMeshPlus.Components.NavMeshModifier
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff

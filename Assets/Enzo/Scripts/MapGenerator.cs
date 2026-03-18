@@ -15,12 +15,10 @@ public class MapGenerator : MonoBehaviour
 {
     public static MapGenerator Instance { get; private set; }
 
-    [Header("Map Settings")]
-    public int mapSize = 50;
+    [Header("Map Settings")] public int mapSize = 50;
     public Tilemap groundTilemap;
 
-    [Header("Safe Zone")]
-    public float SafeZoneRadiusDividend = 5f;
+    [Header("Safe Zone")] public float SafeZoneRadiusDividend = 5f;
     public float SafeZoneWorldRadius => (mapSize / SafeZoneRadiusDividend);
     public Vector2 MapCenterWorld => groundTilemap.GetCellCenterWorld(Vector3Int.zero);
 
@@ -33,8 +31,7 @@ public class MapGenerator : MonoBehaviour
     [Header("Category 3: Core Structures")]
     public GameObject basePrefab;
 
-    [Header("NavMesh")]
-    public NavMesh navMeshBaker;
+    [Header("NavMesh")] public NavMesh navMeshBaker;
 
     private bool[,] obstacleGrid;
     private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
@@ -44,6 +41,7 @@ public class MapGenerator : MonoBehaviour
         public Vector3 worldPosition;
         public int prefabIndex;
     }
+
     private List<DestroyedNode> destroyedNodes = new List<DestroyedNode>();
 
     private Vector2[] resourceNoiseSeeds;
@@ -54,8 +52,15 @@ public class MapGenerator : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    void OnEnable()  { GameManager.OnDayStarted += RespawnResources; }
-    void OnDisable() { GameManager.OnDayStarted -= RespawnResources; }
+    void OnEnable()
+    {
+        GameManager.OnDayStarted += RespawnResources;
+    }
+
+    void OnDisable()
+    {
+        GameManager.OnDayStarted -= RespawnResources;
+    }
 
     void Start()
     {
@@ -88,11 +93,16 @@ public class MapGenerator : MonoBehaviour
                 if (baseTiles != null && baseTiles.Length > 0)
                 {
                     float noiseValue = Mathf.PerlinNoise(x + tileSeedX, y + tileSeedY);
-                    int tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0, baseTiles.Length - 1);
+                    int tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0,
+                        baseTiles.Length - 1);
                     groundTilemap.SetTile(gridPosition, baseTiles[tileIndex]);
                 }
 
-                if (x == 0 && y == 0) { obstacleGrid[arrayX, arrayY] = false; continue; }
+                if (x == 0 && y == 0)
+                {
+                    obstacleGrid[arrayX, arrayY] = false;
+                    continue;
+                }
 
                 Vector3 worldPos = groundTilemap.GetCellCenterWorld(gridPosition);
                 if (Vector2.Distance(worldPos, MapCenterWorld) <= SafeZoneWorldRadius)
@@ -125,7 +135,8 @@ public class MapGenerator : MonoBehaviour
         }
 
         if (basePrefab != null)
-            Instantiate(basePrefab, groundTilemap.GetCellCenterWorld(Vector3Int.zero), Quaternion.identity, transform).name = "Base";
+            Instantiate(basePrefab, groundTilemap.GetCellCenterWorld(Vector3Int.zero), Quaternion.identity, transform)
+                .name = "Base";
 
         if (navMeshBaker != null) navMeshBaker.BakeNavMesh();
         else Debug.LogWarning("MapGenerator: navMeshBaker is not assigned!");
@@ -197,10 +208,22 @@ public class MapGenerator : MonoBehaviour
 
         switch (Random.Range(0, 4))
         {
-            case 0:  x = -halfSize;    y = Random.Range(-halfSize, halfSize); break;
-            case 1:  x = halfSize - 1; y = Random.Range(-halfSize, halfSize); break;
-            case 2:  x = Random.Range(-halfSize, halfSize); y = -halfSize;    break;
-            default: x = Random.Range(-halfSize, halfSize); y = halfSize - 1; break;
+            case 0:
+                x = -halfSize;
+                y = Random.Range(-halfSize, halfSize);
+                break;
+            case 1:
+                x = halfSize - 1;
+                y = Random.Range(-halfSize, halfSize);
+                break;
+            case 2:
+                x = Random.Range(-halfSize, halfSize);
+                y = -halfSize;
+                break;
+            default:
+                x = Random.Range(-halfSize, halfSize);
+                y = halfSize - 1;
+                break;
         }
 
         return groundTilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));

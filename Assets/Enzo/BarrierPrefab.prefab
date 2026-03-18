@@ -12,10 +12,11 @@ GameObject:
   - component: {fileID: 7093512082142514510}
   - component: {fileID: 1383299295536872112}
   - component: {fileID: 8118871567765706376}
-  - component: {fileID: 5751414291618770876}
-  m_Layer: 10
+  - component: {fileID: 3651162091365212373}
+  - component: {fileID: -1947969680880519374}
+  m_Layer: 11
   m_Name: BarrierPrefab
-  m_TagString: Barrier
+  m_TagString: Attackable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,9 +152,9 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.27, y: 0.15}
+  m_Size: {x: 0.3, y: 0.2}
   m_EdgeRadius: 0
---- !u!114 &5751414291618770876
+--- !u!114 &3651162091365212373
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,10 +163,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 6155763099139222675}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a549b70f8b742d342bec8f5fd529d68d, type: 3}
+  m_Script: {fileID: 11500000, guid: 29b6599fde5e4deb96b08b144ff4e4a2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemInteract
-  IconOffset: {x: 0, y: 0}
-  SpawnPrefab: {fileID: 6256672702632077042, guid: cb8bd43c0961ff3408fca38474bbe98b, type: 3}
-  itemName: Wood
-  amount: 1
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingHealth
+  maxHealth: 1
+  healthBarOffset: {x: 0, y: 0.7, z: 0}
+  healthBarWidth: 10
+  healthBarHideDelay: 10
+--- !u!114 &-1947969680880519374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6155763099139222675}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NavMeshPlus::NavMeshPlus.Components.NavMeshModifier
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
