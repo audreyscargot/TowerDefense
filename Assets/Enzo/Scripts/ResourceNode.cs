@@ -29,16 +29,19 @@ public class ResourceNode : MonoBehaviour
     // Call this function from your Player script when they attack/click it
     public void TakeDamage(float damageAmount)
     {
-        currentHealth -= damageAmount;
-
-        if (spriteRenderer != null)
+        if (PlayerFood.Instance.canAction)
         {
-            StartCoroutine(FlashEffect());
-        }
+            currentHealth -= damageAmount;
 
-        if (currentHealth <= 0)
-        {
-            Harvest();
+            if (spriteRenderer != null)
+            {
+                StartCoroutine(FlashEffect());
+            }
+
+            if (currentHealth <= 0)
+            {
+                Harvest();
+            } 
         }
     }
 
@@ -53,8 +56,7 @@ public class ResourceNode : MonoBehaviour
                 Instantiate(dropItemPrefab, transform.position + randomOffset, Quaternion.identity);
             }
         }
-
-        //TODO : Ajouter f° pour diminuer player energy 
+        PlayerFood.Instance.ChangeFood(-1);
         Destroy(gameObject);
     }
 

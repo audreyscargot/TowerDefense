@@ -46,7 +46,6 @@ public class UIManager : MonoBehaviour
         healthLabel = uiDocument.rootVisualElement.Q<Label>("HealthText");
         UpdateText("Health");
         energyLabel = uiDocument.rootVisualElement.Q<Label>("EnergyText");
-        Debug.Log(energyLabel);
         UpdateText("Energy");
     }
 
@@ -66,8 +65,6 @@ public class UIManager : MonoBehaviour
                 stoneLabel.text = inventoryManager.findInInventory("Stone");
                 break;
             case "Energy":
-                Debug.Log(playerFood.currentFood);
-                Debug.Log(energyLabel);
                 energyLabel.text = playerFood.currentFood.ToString();
                 break;
             case "Health":

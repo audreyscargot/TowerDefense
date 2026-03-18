@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class PlayerFood : MonoBehaviour
 {
-    private bool canAction = true;
+    public static PlayerFood Instance{get; private set;}
+    
+    public bool canAction = true;
     
     [SerializeField] private int maxFood;
     public int currentFood;
@@ -10,9 +12,22 @@ public class PlayerFood : MonoBehaviour
 
     public InventoryManager inventory;
     
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+    
     void Start()
     {
         currentFood = maxFood;
+        UIManager.Instance.UpdateText("Energy");
     }
     
     public void ChangeFood(int amount)
@@ -21,6 +36,7 @@ public class PlayerFood : MonoBehaviour
         canAction = currentFood > 0;
         Debug.Log("current food: " + currentFood);
         UIManager.Instance.UpdateText("Food");
+        UIManager.Instance.UpdateText("Energy");
     }
 
     //temp for one type of food
