@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 5556644714803798963}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -312,6 +312,8 @@ MonoBehaviour:
   attackCooldown: 0.5
   damage: 1
   rotateForAim: {fileID: 781420686032636205}
+  mainCam: {fileID: 0}
+  pointerPositionAction: {fileID: 0}
   food: {fileID: 0}
 --- !u!61 &2270249190579483690
 BoxCollider2D:
@@ -451,6 +453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 10
   currentHealth: 0
+  GameManagerObj: {fileID: 0}
 --- !u!114 &5590180322323784399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,6 +472,10 @@ MonoBehaviour:
   scrollSensitivity: 1
   minZoom: 2
   zoomLerpSpeed: 8
+  markerSize: 18
+  baseMarkerSprite: {fileID: 0}
+  spawnerMarkerSprite: {fileID: 0}
+  playerMarkerSprite: {fileID: 0}
   TimelineAnimating: 0
 --- !u!95 &3487309617173683935
 Animator:

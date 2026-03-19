@@ -91,7 +91,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.27, y: 0.15}
+  m_Size: {x: 0.29333332, y: 0.17333333}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -109,6 +109,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Barrier
   maxHealth: 50
+  horizontalSprite: {fileID: 4288597548307622778, guid: 9cf87b696f9bd7d479cb7b961c7d2150, type: 3}
+  verticalSprite: {fileID: 669754534, guid: 9cf87b696f9bd7d479cb7b961c7d2150, type: 3}
+  horizontalColliderSize: {x: 0.3, y: 0.2}
+  verticalColliderSize: {x: 0.2, y: 0.4}
 --- !u!61 &8118871567765706376
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -148,7 +152,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.29333332, y: 0.17333333}
-    newSize: {x: 0.27, y: 0.15}
+    newSize: {x: 0.29333332, y: 0.17333333}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -167,10 +171,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b6599fde5e4deb96b08b144ff4e4a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingHealth
-  maxHealth: 1
-  healthBarOffset: {x: 0, y: 0.7, z: 0}
-  healthBarWidth: 10
-  healthBarHideDelay: 10
+  maxHealth: 100
+  healthBarOffset: {x: 0, y: 0.2, z: 0}
+  healthBarWidth: 0.25
+  healthBarHeight: 0.03
+  healthBarHideDelay: 2
 --- !u!114 &-1947969680880519374
 MonoBehaviour:
   m_ObjectHideFlags: 0

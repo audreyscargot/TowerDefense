@@ -15,14 +15,16 @@ public class MapGenerator : MonoBehaviour
 {
     public static MapGenerator Instance { get; private set; }
 
-    [Header("Map Settings")] public int mapSize = 50;
+    [Header("Map Settings")]
+    public int mapSize = 50;
     public Tilemap groundTilemap;
 
-    [Header("Safe Zone")] public float SafeZoneRadiusDividend = 5f;
-    public float SafeZoneWorldRadius => (mapSize / SafeZoneRadiusDividend);
+    [Header("Safe Zone")]
+    public float SafeZoneRadiusDividend = 5f;
+    public float SafeZoneWorldRadius => mapSize / SafeZoneRadiusDividend;
     public Vector2 MapCenterWorld => groundTilemap.GetCellCenterWorld(Vector3Int.zero);
 
-    [Header("Category 1: Base Tiles (Ground)")]
+    [Header("Category 1: Base Tiles")]
     public TileBase[] baseTiles;
 
     [Header("Category 2: Resource Objects")]
@@ -30,8 +32,6 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Category 3: Core Structures")]
     public GameObject basePrefab;
-
-    [Header("NavMesh")] public NavMesh navMeshBaker;
 
     private bool[,] obstacleGrid;
     private List<Vector2Int> obstacleCoordinates = new List<Vector2Int>();
@@ -43,7 +43,6 @@ public class MapGenerator : MonoBehaviour
     }
 
     private List<DestroyedNode> destroyedNodes = new List<DestroyedNode>();
-
     private Vector2[] resourceNoiseSeeds;
 
     private void Awake()
@@ -52,25 +51,14 @@ public class MapGenerator : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    void OnEnable()
-    {
-        GameManager.OnDayStarted += RespawnResources;
-    }
+    private void OnEnable()  { GameManager.OnDayStarted += RespawnResources; }
+    private void OnDisable() { GameManager.OnDayStarted -= RespawnResources; }
 
-    void OnDisable()
-    {
-        GameManager.OnDayStarted -= RespawnResources;
-    }
-
-    void Start()
-    {
-        GenerateFullMap();
-    }
+    private void Start() { GenerateFullMap(); }
 
     public void GenerateFullMap()
     {
         int halfSize = mapSize / 2;
-
         obstacleGrid = new bool[mapSize, mapSize];
         obstacleCoordinates.Clear();
         destroyedNodes.Clear();
@@ -93,16 +81,11 @@ public class MapGenerator : MonoBehaviour
                 if (baseTiles != null && baseTiles.Length > 0)
                 {
                     float noiseValue = Mathf.PerlinNoise(x + tileSeedX, y + tileSeedY);
-                    int tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0,
-                        baseTiles.Length - 1);
+                    int tileIndex = Mathf.Clamp(Mathf.FloorToInt(noiseValue * baseTiles.Length), 0, baseTiles.Length - 1);
                     groundTilemap.SetTile(gridPosition, baseTiles[tileIndex]);
                 }
 
-                if (x == 0 && y == 0)
-                {
-                    obstacleGrid[arrayX, arrayY] = false;
-                    continue;
-                }
+                if (x == 0 && y == 0) { obstacleGrid[arrayX, arrayY] = false; continue; }
 
                 Vector3 worldPos = groundTilemap.GetCellCenterWorld(gridPosition);
                 if (Vector2.Distance(worldPos, MapCenterWorld) <= SafeZoneWorldRadius)
@@ -135,18 +118,20 @@ public class MapGenerator : MonoBehaviour
         }
 
         if (basePrefab != null)
-            Instantiate(basePrefab, groundTilemap.GetCellCenterWorld(Vector3Int.zero), Quaternion.identity, transform)
-                .name = "Base";
+            Instantiate(basePrefab, groundTilemap.GetCellCenterWorld(Vector3Int.zero), Quaternion.identity, transform).name = "Base";
 
-        if (navMeshBaker != null) navMeshBaker.BakeNavMesh();
-        else Debug.LogWarning("MapGenerator: navMeshBaker is not assigned!");
+        AStarGrid astar = GetComponent<AStarGrid>();
+        if (astar != null)
+        {
+            astar.gridWorldSize = new Vector2(mapSize * groundTilemap.cellSize.x, mapSize * groundTilemap.cellSize.y);
+            astar.BuildGridFromObstacles(obstacleGrid, mapSize);
+        }
+        else Debug.LogWarning("MapGenerator: No AStarGrid component found!");
 
         if (EnemySpawner.Instance != null)
             EnemySpawner.Instance.PrepareForNewDay();
     }
 
-    // Destroys all ResourceNodes within worldRadius of worldPos
-    // Called by EnemySpawner after picking spawn positions
     public void ClearResourcesNearPosition(Vector3 worldPos, float worldRadius)
     {
         ResourceNode[] allNodes = GetComponentsInChildren<ResourceNode>();
@@ -154,7 +139,7 @@ public class MapGenerator : MonoBehaviour
         {
             if (Vector3.Distance(node.transform.position, worldPos) <= worldRadius)
             {
-                // Don't register as destroyed — we don't want them respawning here
+                AStarGrid.Instance?.SetNodeWalkable(node.transform.position, true);
                 Destroy(node.gameObject);
             }
         }
@@ -165,39 +150,30 @@ public class MapGenerator : MonoBehaviour
         if (resourcePrefabs == null || prefabIndex >= resourcePrefabs.Length) return null;
 
         GameObject obj = Instantiate(resourcePrefabs[prefabIndex].prefab, worldPos, Quaternion.identity, transform);
-
         ResourceNode node = obj.GetComponent<ResourceNode>();
-        if (node != null)
-        {
-            node.prefabIndex = prefabIndex;
-            node.spawnPosition = worldPos;
-        }
-
+        if (node != null) { node.prefabIndex = prefabIndex; node.spawnPosition = worldPos; }
         return obj;
     }
 
     public void OnResourceDestroyed(ResourceNode node)
     {
-        destroyedNodes.Add(new DestroyedNode
-        {
-            worldPosition = node.spawnPosition,
-            prefabIndex = node.prefabIndex
-        });
+        destroyedNodes.Add(new DestroyedNode { worldPosition = node.spawnPosition, prefabIndex = node.prefabIndex });
+        AStarGrid.Instance?.SetNodeWalkable(node.spawnPosition, true);
     }
 
     private void RespawnResources()
     {
         List<DestroyedNode> stillDead = new List<DestroyedNode>();
-
         foreach (DestroyedNode dead in destroyedNodes)
         {
             float chance = resourcePrefabs[dead.prefabIndex].respawnChancePerDay;
             if (Random.value < chance)
+            {
                 SpawnResourceNode(dead.prefabIndex, dead.worldPosition);
-            else
-                stillDead.Add(dead);
+                AStarGrid.Instance?.SetNodeWalkable(dead.worldPosition, false);
+            }
+            else stillDead.Add(dead);
         }
-
         destroyedNodes = stillDead;
     }
 
@@ -205,27 +181,13 @@ public class MapGenerator : MonoBehaviour
     {
         int halfSize = mapSize / 2;
         int x, y;
-
         switch (Random.Range(0, 4))
         {
-            case 0:
-                x = -halfSize;
-                y = Random.Range(-halfSize, halfSize);
-                break;
-            case 1:
-                x = halfSize - 1;
-                y = Random.Range(-halfSize, halfSize);
-                break;
-            case 2:
-                x = Random.Range(-halfSize, halfSize);
-                y = -halfSize;
-                break;
-            default:
-                x = Random.Range(-halfSize, halfSize);
-                y = halfSize - 1;
-                break;
+            case 0:  x = -halfSize;    y = Random.Range(-halfSize, halfSize); break;
+            case 1:  x = halfSize - 1; y = Random.Range(-halfSize, halfSize); break;
+            case 2:  x = Random.Range(-halfSize, halfSize); y = -halfSize;    break;
+            default: x = Random.Range(-halfSize, halfSize); y = halfSize - 1; break;
         }
-
         return groundTilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
     }
 
@@ -234,9 +196,8 @@ public class MapGenerator : MonoBehaviour
 
     public void RemoveObstacleAt(Vector2Int worldGridPosition)
     {
-        int arrayX = worldGridPosition.x + (mapSize / 2);
-        int arrayY = worldGridPosition.y + (mapSize / 2);
-
+        int arrayX = worldGridPosition.x + mapSize / 2;
+        int arrayY = worldGridPosition.y + mapSize / 2;
         if (arrayX >= 0 && arrayX < mapSize && arrayY >= 0 && arrayY < mapSize)
         {
             obstacleGrid[arrayX, arrayY] = false;

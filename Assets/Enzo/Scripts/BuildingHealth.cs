@@ -8,6 +8,7 @@ public class BuildingHealth : MonoBehaviour
     [Header("Health Bar")]
     public Vector3 healthBarOffset = new Vector3(0, 0.7f, 0);
     public float healthBarWidth = 1f;
+    public float healthBarHeight = 0.15f;
     public float healthBarHideDelay = 2f;
 
     private float currentHealth;
@@ -15,7 +16,7 @@ public class BuildingHealth : MonoBehaviour
     private UnityEngine.UI.Image healthBarFill;
     private Coroutine hideCoroutine;
 
-    void Start()
+    private void Start()
     {
         currentHealth = maxHealth;
         CreateHealthBar();
@@ -28,14 +29,14 @@ public class BuildingHealth : MonoBehaviour
         worldCanvas.renderMode = RenderMode.WorldSpace;
         worldCanvas.transform.SetParent(transform, false);
         worldCanvas.transform.localPosition = healthBarOffset;
-        worldCanvas.GetComponent<RectTransform>().sizeDelta = new Vector2(healthBarWidth, 0.15f);
+        worldCanvas.GetComponent<RectTransform>().sizeDelta = new Vector2(healthBarWidth, healthBarHeight);
         worldCanvas.sortingOrder = 10;
 
         healthBarGO = new GameObject("HealthBar");
         healthBarGO.transform.SetParent(worldCanvas.transform, false);
         UnityEngine.UI.Image bg = healthBarGO.AddComponent<UnityEngine.UI.Image>();
         bg.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-        healthBarGO.GetComponent<RectTransform>().sizeDelta = new Vector2(healthBarWidth, 0.15f);
+        healthBarGO.GetComponent<RectTransform>().sizeDelta = new Vector2(healthBarWidth, healthBarHeight);
 
         GameObject fillGO = new GameObject("Fill");
         fillGO.transform.SetParent(healthBarGO.transform, false);
@@ -58,8 +59,7 @@ public class BuildingHealth : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        currentHealth -= amount;
-        currentHealth = Mathf.Max(currentHealth, 0f);
+        currentHealth = Mathf.Max(currentHealth - amount, 0f);
 
         healthBarGO.SetActive(true);
         UpdateHealthBar();
@@ -67,7 +67,10 @@ public class BuildingHealth : MonoBehaviour
         if (hideCoroutine != null) StopCoroutine(hideCoroutine);
 
         if (currentHealth <= 0f)
-            Destroy(gameObject); // just destroy, no rebake
+        {
+            AStarGrid.Instance?.SetNodeWalkable(transform.position, true);
+            Destroy(gameObject);
+        }
         else
             hideCoroutine = StartCoroutine(HideBarAfterDelay());
     }

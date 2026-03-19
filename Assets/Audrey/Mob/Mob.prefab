@@ -148,7 +148,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4774824240265195293}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.16
   m_Speed: 3.5
@@ -185,8 +185,9 @@ MonoBehaviour:
     m_Bits: 2048
   rangeOfAttack: 1
   rangeOfSight: 3
+  moveSpeed: 3
   attackCooldown: 1
-  pathCheckInterval: 0.5
+  pathRefreshInterval: 0.4
 --- !u!50 &-5624981444934763626
 Rigidbody2D:
   serializedVersion: 5
@@ -195,7 +196,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4774824240265195293}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
