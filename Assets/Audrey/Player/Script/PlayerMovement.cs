@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     public Camera mainCam;
     public InputActionReference pointerPositionAction;
     private Vector2 currentMouseScreenPos;
+
+    public AudioSource weapon;
     
     
     void Start()
@@ -97,6 +99,7 @@ public class PlayerMovement : MonoBehaviour
         if (canAttack)
         {
             anim.SetTrigger("Attack");
+            if(weapon) weapon.Play();
             Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
             Vector2 newTemp = new Vector2(transform.position.x, transform.position.y);
             CapsuleDirection2D dirTemp = new CapsuleDirection2D();

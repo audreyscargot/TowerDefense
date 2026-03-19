@@ -1,5 +1,7 @@
 using System;
+using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
@@ -32,6 +34,11 @@ public class GameManager : MonoBehaviour
     public bool TimelineAnimating;
     bool TimelinePlayerLightPoint;
     public Volume ppv;
+    
+    //Audio
+    public AudioSource MainSource;
+    public AudioClip DayAudioGenerator;
+    public AudioClip NightAudioGenerator;
     
 
     private void Start()
@@ -73,6 +80,8 @@ public class GameManager : MonoBehaviour
                 OnNightStarted?.Invoke(); // Tell spawner to start
                 Debug.Log("Day " + DayNightCounter);
             }
+            MainSource.clip = NightAudioGenerator;
+            MainSource.Play();
         }
     }
 
@@ -87,7 +96,10 @@ public class GameManager : MonoBehaviour
             PlayerLightHandler.StartTweenPlayer(PlayerLightIntensity, 0f, 3f);
             
             OnDayStarted?.Invoke(); // Tell spawners to show themselves for the new day
+            MainSource.clip = DayAudioGenerator;
+            MainSource.Play();
         }
+        
     }
 
     void Update()
