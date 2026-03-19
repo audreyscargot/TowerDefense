@@ -16,9 +16,9 @@ public class MenuCat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         "y-you know cats can't talk right ?",
         "okay you won.. this game is made by: Sartore Enzo, Adrien Audrey, Demir Ahmetcan"
     };
-    
+    private bool isTyping = false;
     public Sprite UnhoverBackground;
-
+    private Coroutine typingCoroutine;
     public Sprite CatPet1;
     public Sprite CatPet2;
     public Sprite CatTouched;
@@ -38,24 +38,32 @@ public class MenuCat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private bool toggle = false;
     private bool Touched = false;
     private bool CanChangeImage = true;
-    
+
+    private AudioSource CatVoice;
     IEnumerator TypeText(string fullText)
     {
+        isTyping = true;
+
         TextMeshProUGUI msg = SpeakTextObj.GetComponent<TextMeshProUGUI>();
         msg.text = "";
         CanChangeImage = false;
-        bool imageSwitch = false;
+
         foreach (char c in fullText)
         {
             CanChangeImage = !CanChangeImage;
             BackgroundImage.sprite = CanChangeImage ? CatTalking : CatTalking2;
             msg.text += c;
-            yield return new WaitForSeconds(0.05f);
+            CatVoice.Play();
+            yield return new WaitForSeconds(0.06f);
         }
+
         yield return new WaitForSeconds(1f);
-        CanChangeImage = true;
+
         SpeakFrame.SetActive(false);
         if (!MouseIn) BackgroundImage.sprite = UnhoverBackground;
+
+        CanChangeImage = true;
+        isTyping = false;
     }
     
     public void Clicked()
@@ -67,12 +75,13 @@ public class MenuCat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     public void ClickedCredit()
     {
+        if (isTyping) return; 
+
         BackgroundImage.sprite = CatTalking;
         SpeakFrame.SetActive(true);
-        
-        if (!CanChangeImage) return;
+
         StartCoroutine(TypeText(texts[CreditCount]));
-        
+
         if (CreditCount >= 3) CreditCount = 0;
         else CreditCount += 1;
     }
@@ -81,6 +90,7 @@ public class MenuCat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         BackgroundImage = GetComponent<Image>();
         SpeakFrame.SetActive(false);
+        CatVoice = gameObject.GetComponent<AudioSource>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

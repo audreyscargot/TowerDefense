@@ -20,7 +20,9 @@ public class ButtonVisualMenu : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        InterfaceHandler.MoveCursor(TargetLoc,IconImage);
+        float TLoc = gameObject.transform.position.y - 800;
+        
+        InterfaceHandler.MoveCursor(TLoc,IconImage);
         BackgroundImage.sprite = HoverBackground;
         
     }

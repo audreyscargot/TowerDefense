@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
@@ -19,4 +20,5 @@ public class MainMenu : MonoBehaviour
     Page1.SetActive(true);                                                                          
     Page2.SetActive(false);
   }
+  
 }
