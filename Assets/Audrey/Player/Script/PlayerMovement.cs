@@ -97,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
         if (canAttack)
         {
             Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
-            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.5f, mouseWorldPos,attackRange,layerMask);
+            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.1f, mouseWorldPos,attackRange,layerMask);
             Debug.Log(hit ? hit.collider : null);
             EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
             if (hitEnemy)
@@ -124,6 +124,9 @@ public class PlayerMovement : MonoBehaviour
             //DEBUG TODO DELETE
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position,mouseWorldPos); 
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(mouseWorldPos, 0.1f);
+            Gizmos.DrawSphere(transform.position, 0.1f);
         }
     }
 
