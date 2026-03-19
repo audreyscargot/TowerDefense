@@ -52,7 +52,6 @@ namespace Audrey.Player.Script
 
         void Heal()
         {
-            Debug.LogWarning("HEAL");
             currentHealth = maxHealth;
             UpdateText(name);
         }

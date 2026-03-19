@@ -68,8 +68,9 @@ public class UIManager : MonoBehaviour
                 if (energyLabel != null && playerFood != null)
                     energyLabel.text = playerFood.currentFood.ToString();
                 break;
-            case "Health":
+            case "Player":
                 healthLabel.text = playerHealth.currentHealth.ToString();
+                Debug.Log("Player: " + healthLabel.text);
                 break;
             case "Base":
                 baseLabel.text = baseHealth.currentHealth.ToString();
