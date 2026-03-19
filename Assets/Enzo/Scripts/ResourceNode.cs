@@ -29,7 +29,7 @@ public class ResourceNode : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         if (!PlayerFood.Instance.canAction) return; //if not enough Food, player can't hit
-        
+
         FlashEffect();
         currentHealth -= damageAmount;
 
@@ -66,7 +66,7 @@ public class ResourceNode : MonoBehaviour
     private System.Collections.IEnumerator FlashEffect()
     {
         spriteRenderer.color = hitFlashColor;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         spriteRenderer.color = originalColor;
     }
 }

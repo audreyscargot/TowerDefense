@@ -110,8 +110,8 @@ MonoBehaviour:
   dropItemPrefab: {fileID: 3529797355188954763, guid: 56e2c4fe0f8652a499cd0e27bc9a4a7d, type: 3}
   minDropAmount: 1
   maxDropAmount: 3
-  spriteRenderer: {fileID: 0}
-  hitFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  spriteRenderer: {fileID: 8820682353304021056}
+  hitFlashColor: {r: 1, g: 0, b: 0, a: 0.7294118}
   prefabIndex: 0
   spawnPosition: {x: 0, y: 0, z: 0}
 --- !u!61 &6271241197428264199

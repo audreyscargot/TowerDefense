@@ -43,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
     {
         ProcessInput();
         Animate();
-        Test();
         Test2();
         if (pointerPositionAction != null)
             currentMouseScreenPos = pointerPositionAction.action.ReadValue<Vector2>();
@@ -151,20 +150,11 @@ public class PlayerMovement : MonoBehaviour
         canAttack = true;
     }
 
-    //TEST FUNCTION TODO : DELETE
-    public static void Test()
-    {
-        if (Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            GameManager.OnDayStarted.Invoke();
-        }
-    }
-
     public PlayerFood food;
     
     public void Test2()
     {
-        if (Keyboard.current.rKey.wasPressedThisFrame)
+        if (Keyboard.current.cKey.wasPressedThisFrame)
         {
             food.ConsumeFood();
             Debug.Log("Consume Food");
