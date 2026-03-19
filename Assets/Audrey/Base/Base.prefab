@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -341255530190761250}
   - component: {fileID: -3250091958673171396}
   - component: {fileID: 3239307268749457626}
+  - component: {fileID: -1155453408920772455}
   m_Layer: 8
   m_Name: Base
   m_TagString: Untagged
@@ -106,8 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801c37d5e111a45448aa60665fa23154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 100
+  maxHealth: 50
   currentHealth: 0
+  GameManagerObj: {fileID: 0}
 --- !u!61 &-3250091958673171396
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -146,7 +148,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.6, y: 1.92}
+    oldSize: {x: 2, y: 2.4}
     newSize: {x: 0.57, y: 0.36}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -169,3 +171,17 @@ MonoBehaviour:
   IconOffset: {x: 0, y: 0}
   SpawnPrefab: {fileID: 6256672702632077042, guid: cb8bd43c0961ff3408fca38474bbe98b, type: 3}
   GameManagerObj: {fileID: 3864689801975149506, guid: a4f2a4bcdc9893a48a19c4e4515306ff, type: 3}
+--- !u!114 &-1155453408920772455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4310208884456796438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e17f9b2ed8dc5ff449b37d06d25a7ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveAndLoad
+  textPrefab: {fileID: 0}
+  parentObjectScore: {fileID: 0}

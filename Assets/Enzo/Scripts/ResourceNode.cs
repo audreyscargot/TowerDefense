@@ -28,8 +28,9 @@ public class ResourceNode : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
-        if (!PlayerFood.Instance.canAction) return;
-
+        if (!PlayerFood.Instance.canAction) return; //if not enough Food, player can't hit
+        
+        FlashEffect();
         currentHealth -= damageAmount;
 
         if (spriteRenderer != null)

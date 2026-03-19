@@ -1,3 +1,4 @@
+using Audrey.Player.Script;
 using UnityEngine;
 
 public class PlayerFood : MonoBehaviour
@@ -31,6 +32,7 @@ public class PlayerFood : MonoBehaviour
         {
             UIManager.Instance.UpdateText("Energy");
         }
+        GameManager.OnDayStarted += ResetFood;
     }
     
     public void ChangeFood(int amount)
@@ -52,6 +54,11 @@ public class PlayerFood : MonoBehaviour
                 inventory.RemoveItem("Food",1);
             }
         }
+    }
+
+    void ResetFood()
+    {
+        currentFood = maxFood;
     }
     
 }

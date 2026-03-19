@@ -12,10 +12,12 @@ public class UIManager : MonoBehaviour
     private Label stoneLabel;
     private Label energyLabel;
     private Label healthLabel;
+    private Label baseLabel;
     
     private InventoryManager inventoryManager;
-    private PlayerHealth playerHealth;
+    public PlayerHealth playerHealth;
     private PlayerFood playerFood;
+    public PlayerHealth baseHealth;
 
     private void Awake()
     {
@@ -32,6 +34,7 @@ public class UIManager : MonoBehaviour
         stoneLabel  = uiDocument.rootVisualElement.Q<Label>("StoneText");
         healthLabel = uiDocument.rootVisualElement.Q<Label>("HealthText");
         energyLabel = uiDocument.rootVisualElement.Q<Label>("EnergyText");
+        baseLabel = uiDocument.rootVisualElement.Q<Label>("BaseText");
     }
 
     void Start()
@@ -68,6 +71,23 @@ public class UIManager : MonoBehaviour
             case "Health":
                 healthLabel.text = playerHealth.currentHealth.ToString();
                 break;
+            case "Base":
+                baseLabel.text = baseHealth.currentHealth.ToString();
+                break;
+        }
+    }
+
+    public void SetVariable(string name, PlayerHealth health)
+    {
+        switch (name)
+        {
+            case "Player":
+                playerHealth = health;
+                break;
+            case "Base":
+                baseHealth = health;
+                break;
+                
         }
     }
 }
