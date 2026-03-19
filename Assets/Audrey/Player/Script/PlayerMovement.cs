@@ -96,32 +96,45 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canAttack)
         {
+            anim.SetTrigger("Attack");
             Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
-            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.1f, mouseWorldPos,attackRange,layerMask);
-            Debug.Log(hit ? hit.collider : null);
-            EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
-            if (hitEnemy)
+            Vector2 newTemp = new Vector2(transform.position.x, transform.position.y);
+            CapsuleDirection2D dirTemp = new CapsuleDirection2D();
+            RaycastHit2D hit = Physics2D.Linecast(transform.position, mouseWorldPos, layerMask);
+            // RaycastHit2D hit = Physics2D.CapsuleCast(newTemp, new Vector2(0.5f, attackRange), dirTemp ,90, mouseWorldPos,attackRange, layerMask);
+            
+            // calcul distance between player to mouseworldpos
+            if (hit.collider != null)
             {
-                hitEnemy.TakeDamage(damage);
+                if (Vector2.Distance(transform.position, hit.collider.transform.position) <= attackRange)
+                {
+                    //Enemy
+                    EnemyAI hitEnemy = hit ? hit.collider.gameObject.GetComponent<EnemyAI>() : null;
+                    if (hitEnemy)
+                    {
+                        hitEnemy.TakeDamage(damage);
                 
-            }
+                    }
            
-           ResourceNode resourceNode = hit ? hit.collider.gameObject.GetComponent<ResourceNode>() : null;
-            if (resourceNode)
-            {
-                resourceNode.TakeDamage(damage);
+                    //Ressource
+                    ResourceNode resourceNode = hit ? hit.collider.gameObject.GetComponent<ResourceNode>() : null;
+                    if (resourceNode)
+                    {
+                        resourceNode.TakeDamage(damage);
+                    }
+                    canAttack =  false;
+                    Invoke("ResetAttack", attackCooldown);
+                } 
+                }
             }
-            canAttack =  false;
-            Invoke("ResetAttack", attackCooldown);
-        }
     }
     
+    //DEBUG for attack
     void OnDrawGizmos()
     {
         if (mainCam != null)
         {
             Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(currentMouseScreenPos);
-            //DEBUG TODO DELETE
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position,mouseWorldPos); 
             Gizmos.color = Color.blue;
