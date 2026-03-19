@@ -758,86 +758,6 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 1296780609566843585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
   m_PrefabInstance: {fileID: 1010495987}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1115891701
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1115891704}
-  - component: {fileID: 1115891703}
-  - component: {fileID: 1115891702}
-  m_Layer: 0
-  m_Name: NavMesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1115891702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115891701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70bd44a44cd62c64fbfc1eea95b24880, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: NavMeshPlus::NavMeshPlus.Extensions.CollectSources2d
-  m_OverrideByGrid: 0
-  m_UseMeshPrefab: {fileID: 0}
-  m_CompressBounds: 0
-  m_OverrideVector: {x: 1, y: 1, z: 1}
---- !u!114 &1115891703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115891701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e04976799df50f54ba128eff723155a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: NavMeshPlus::NavMeshPlus.Components.NavMeshSurface
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 1
-  m_VoxelSize: 0.033333335
-  m_BuildHeightMesh: 0
-  m_MinRegionArea: 0
-  m_HideEditorLogs: 0
-  m_NavMeshData: {fileID: 23800000, guid: c9452152ff64c5f4184c8d8e139425ee, type: 2}
---- !u!4 &1115891704
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115891701}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &1125838580
 GameObject:
   m_ObjectHideFlags: 0
@@ -888,6 +808,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   gridSize: 0.5
+  overlayAlpha: 0.25
   upgradeUIFont: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
   groundTilemap: {fileID: 1161949579}
   toggleBuildModeAction: {fileID: -1240972220466220524, guid: b81431a49df96b84da168f48d9f758f7, type: 3}
@@ -1401,7 +1322,6 @@ GameObject:
   - component: {fileID: 1683661400}
   - component: {fileID: 1683661399}
   - component: {fileID: 1683661401}
-  - component: {fileID: 1683661403}
   - component: {fileID: 1683661404}
   m_Layer: 0
   m_Name: Grid
@@ -1476,19 +1396,6 @@ MonoBehaviour:
     noiseScale: 0.15
     respawnChancePerDay: 0.3
   basePrefab: {fileID: 4310208884456796438, guid: 6b495fd19f07d69438c9cdcd623ea3c7, type: 3}
---- !u!114 &1683661403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1683661398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8fd163fd72a82348a1fa57a7be419a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NavMesh
-  surface: {fileID: 1115891703}
 --- !u!114 &1683661404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1703,7 +1610,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 890185658}
   - {fileID: 1010495987}
-  - {fileID: 1115891704}
   - {fileID: 1683661400}
   - {fileID: 1934890415}
   - {fileID: 1071445048}

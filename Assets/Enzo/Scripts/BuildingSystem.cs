@@ -14,6 +14,9 @@ public class BuildingSystem : MonoBehaviour
     public LayerMask unbuildableLayer;
     public float gridSize = 0.5f;
 
+    [Header("Build Zone Overlay")]
+    [Range(0f, 1f)] public float overlayAlpha = 0.3f;
+
     [Header("Upgrade UI")]
     public Font upgradeUIFont;
 
@@ -41,6 +44,67 @@ public class BuildingSystem : MonoBehaviour
     private GameObject generatedCanvas;
     private GameObject buildMenuPanel;
     private GameObject upgradePanel;
+
+    // ── Build Zone Overlay ───────────────────────────────────
+    private GameObject buildZoneOverlay;
+
+    private void CreateBuildZoneOverlay()
+    {
+        if (buildZoneOverlay != null) Destroy(buildZoneOverlay);
+        buildZoneOverlay = new GameObject("BuildZoneOverlay");
+
+        // 4×4 white square texture — scaled to fit exactly one tile
+        Texture2D tex = new Texture2D(4, 4) { filterMode = FilterMode.Point };
+        Color[] px = new Color[16];
+        for (int i = 0; i < 16; i++) px[i] = Color.white;
+        tex.SetPixels(px);
+        tex.Apply();
+
+        Vector2 cellSize = groundTilemap.cellSize;
+        float ppu = 4f / cellSize.x;
+        Sprite squareSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), ppu);
+        int sortOrder = groundTilemap.GetComponent<TilemapRenderer>().sortingOrder + 1;
+
+        BoundsInt bounds = groundTilemap.cellBounds;
+        foreach (Vector3Int cell in bounds.allPositionsWithin)
+        {
+            if (!groundTilemap.HasTile(cell)) continue;
+            Vector2 worldPos = groundTilemap.GetCellCenterWorld(cell);
+            if (!IsPositionBuildable(worldPos)) continue;
+
+            GameObject sq = new GameObject("Sq");
+            sq.transform.SetParent(buildZoneOverlay.transform, false);
+            sq.transform.position = worldPos;
+
+            SpriteRenderer sr = sq.AddComponent<SpriteRenderer>();
+            sr.sprite = squareSprite;
+            sr.color = new Color(0f, 1f, 0f, overlayAlpha);
+            sr.sortingOrder = sortOrder;
+        }
+
+        buildZoneOverlay.SetActive(false);
+    }
+
+    private bool IsPositionBuildable(Vector2 position)
+    {
+        if (MapGenerator.Instance != null)
+            if (Vector2.Distance(MapGenerator.Instance.MapCenterWorld, position)
+                > MapGenerator.Instance.SafeZoneWorldRadius) return false;
+
+        return Physics2D.OverlapCircle(position, 0.1f, unbuildableLayer) == null;
+    }
+
+    private void ShowBuildZoneOverlay()
+    {
+        CreateBuildZoneOverlay(); // always rebuild so new obstacles are respected
+        buildZoneOverlay.SetActive(true);
+    }
+
+    private void HideBuildZoneOverlay()
+    {
+        if (buildZoneOverlay != null) buildZoneOverlay.SetActive(false);
+    }
+    // ────────────────────────────────────────────────────────
 
     void Start()
     {
@@ -276,6 +340,7 @@ public class BuildingSystem : MonoBehaviour
         currentRotationAngle = 0f;
         CloseUpgradePanel();
         if (buildMenuPanel != null) buildMenuPanel.SetActive(true);
+        ShowBuildZoneOverlay();
     }
 
     public void ConfirmAndExitBuildMode()
@@ -311,7 +376,6 @@ public class BuildingSystem : MonoBehaviour
                 foreach (Collider2D col in ghost.GetComponentsInChildren<Collider2D>())
                     col.enabled = true;
 
-                // Mark building position as unwalkable in pathfinding
                 AStarGrid.Instance?.SetNodeWalkable(ghost.transform.position, false);
             }
         }
@@ -328,6 +392,7 @@ public class BuildingSystem : MonoBehaviour
         CloseUpgradePanel();
         if (buildMenuPanel != null) buildMenuPanel.SetActive(false);
         DestroyPreviewObject();
+        HideBuildZoneOverlay();
     }
 
     public void SelectBuilding(BuildableItem item)
@@ -347,11 +412,11 @@ public class BuildingSystem : MonoBehaviour
         IRotatableBuilding rotatable = currentPreviewObject.GetComponent<IRotatableBuilding>();
         if (rotatable != null) rotatable.ApplyRotationSprite(currentRotationAngle);
 
-        Collider2D[] cols = currentPreviewObject.GetComponentsInChildren<Collider2D>();
-        foreach (Collider2D col in cols) col.enabled = false;
+        foreach (Collider2D col in currentPreviewObject.GetComponentsInChildren<Collider2D>())
+            col.enabled = false;
 
-        SpriteRenderer[] renderers = currentPreviewObject.GetComponentsInChildren<SpriteRenderer>();
-        foreach (SpriteRenderer sr in renderers) { sr.color = new Color(1f, 1f, 1f, 0.5f); sr.sortingOrder = 100; }
+        foreach (SpriteRenderer sr in currentPreviewObject.GetComponentsInChildren<SpriteRenderer>())
+        { sr.color = new Color(1f, 1f, 1f, 0.5f); sr.sortingOrder = 100; }
     }
 
     private void DestroyPreviewObject()
@@ -370,9 +435,8 @@ public class BuildingSystem : MonoBehaviour
         IRotatableBuilding rotatable = currentPreviewObject.GetComponent<IRotatableBuilding>();
         if (rotatable != null) rotatable.ApplyRotationSprite(currentRotationAngle);
 
-        SpriteRenderer[] renderers = currentPreviewObject.GetComponentsInChildren<SpriteRenderer>();
         bool canBuild = CanBuildHere(gridPos);
-        foreach (SpriteRenderer sr in renderers)
+        foreach (SpriteRenderer sr in currentPreviewObject.GetComponentsInChildren<SpriteRenderer>())
             sr.color = canBuild ? new Color(0, 1, 0, 0.5f) : new Color(1, 0, 0, 0.5f);
     }
 
