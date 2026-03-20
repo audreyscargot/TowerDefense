@@ -1,7 +1,5 @@
 using System;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
@@ -26,7 +24,7 @@ public class GameManager : MonoBehaviour
     private float DayStep = 0; 
 
     //function variables
-    private float DayNightCounter = 0;
+    public float DayNightCounter = 0;
     public bool isDay { get; private set; } = true; // Spawner needs to know this
 
     //timeline
@@ -81,7 +79,6 @@ public class GameManager : MonoBehaviour
                 DayNightCounter = 0;
                 
                 OnNightStarted?.Invoke(); // Tell spawner to start
-                Debug.Log("Day " + DayNightCounter);
             }
             MainSource.clip = NightAudioGenerator;
             MainSource.Play();
@@ -99,6 +96,7 @@ public class GameManager : MonoBehaviour
             PlayerLightHandler.StartTweenPlayer(PlayerLightIntensity, 0f, 3f);
             
             OnDayStarted?.Invoke(); // Tell spawners to show themselves for the new day
+            UIManager.Instance.UpdateText("Night");
             MainSource.clip = DayAudioGenerator;
             MainSource.Play();
         }

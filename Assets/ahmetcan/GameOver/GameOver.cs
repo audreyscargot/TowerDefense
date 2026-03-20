@@ -9,9 +9,9 @@ public class GameOver : MonoBehaviour
   public GameObject Page2;
   public GameObject NameText;
   private bool Confirmed = false;
-  public void PlayGame() { SceneManager.LoadSceneAsync(2);} // main game map
+  public void PlayGame() { SceneManager.LoadSceneAsync(1);} // main game map
   
-  public void ReturnToMainMenu(){ SceneManager.LoadSceneAsync(3);} // main menu map
+  public void ReturnToMainMenu(){ SceneManager.LoadSceneAsync(0);} // main menu map
 
   public void ReturnToPage1()
   {

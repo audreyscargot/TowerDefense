@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1452507964590582268}
   - component: {fileID: 8939650802963280848}
   - component: {fileID: 2888406539084445062}
-  - component: {fileID: 5535153005868568527}
   m_Layer: 0
   m_Name: CraftableFood
   m_TagString: Untagged
@@ -114,7 +113,7 @@ MonoBehaviour:
   - {fileID: -4235080287930492418, guid: 540390061bb42534c8bf3960b45d748e, type: 3}
   currentSprite: {fileID: 1452507964590582268}
   dropItemPrefab: {fileID: 864320956031860081, guid: 99d71423984f625468ad614e0e35e481, type: 3}
-  dropCount: 2
+  dropCount: 3
 --- !u!61 &2888406539084445062
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -161,20 +160,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.42666668, y: 0.4}
   m_EdgeRadius: 0
---- !u!114 &5535153005868568527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 634115565453277484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc6abfed75294b629873c65bb09575e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Upgradeable
-  canBeUpgraded: 0
-  levels: []
-  OnLevelChanged:
-    m_PersistentCalls:
-      m_Calls: []

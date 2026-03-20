@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     private Label energyLabel;
     private Label healthLabel;
     private Label baseLabel;
+    private Label nightLabel;
 
     private InventoryManager inventoryManager;
     public PlayerHealth playerHealth;
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
         healthLabel = uiDocument.rootVisualElement.Q<Label>("HealthText");
         energyLabel = uiDocument.rootVisualElement.Q<Label>("EnergyText");
         baseLabel   = uiDocument.rootVisualElement.Q<Label>("BaseText");
+        nightLabel = uiDocument.rootVisualElement.Q<Label>("NightCountText");
     }
 
     private void OnEnable()  => InventoryManager.OnItemChanged += TriggerPulse;
@@ -76,6 +78,9 @@ public class UIManager : MonoBehaviour
                 break;
             case "Base":
                 baseLabel.text = baseHealth.currentHealth.ToString();
+                break;
+            case "Night":
+                nightLabel.text = "DAY " + GameManager.Instance.Days.ToString();
                 break;
         }
     }

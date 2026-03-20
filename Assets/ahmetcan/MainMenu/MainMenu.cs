@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour
 {
   public GameObject Page1;
   public GameObject Page2;
-  public void PlayGame() { SceneManager.LoadSceneAsync(2);} // main game map
+  public void PlayGame() { SceneManager.LoadSceneAsync(1);} // main game map
   public void ExitGame(){Application.Quit();} // exit game
 
   public void ToPage2()

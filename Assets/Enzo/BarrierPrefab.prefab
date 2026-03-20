@@ -172,13 +172,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingHealth
   hit: {fileID: 2053716266716473431}
-  maxHealth: 100
+  maxHealth: 10
   healthBarOffset: {x: 0, y: 0.2, z: 0}
   healthBarWidth: 0.25
   healthBarHeight: 0.03
   healthBarHideDelay: 2
-  spriteRenderer: {fileID: 7093512082142514510}
-  hitFlashColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!82 &8120019768364139654
 AudioSource:
   m_ObjectHideFlags: 0

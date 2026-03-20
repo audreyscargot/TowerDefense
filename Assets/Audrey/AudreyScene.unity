@@ -133,11 +133,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.9149897
+      value: -2.994
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.0775188
+      value: 1.029
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -455,6 +455,50 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 8112666625137840822, guid: 9b9da3940849b6a4caed988314b254a4, type: 3}
   m_PrefabInstance: {fileID: 1390978806}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &973461130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 973461132}
+  - component: {fileID: 973461131}
+  m_Layer: 0
+  m_Name: SecretMinigame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &973461131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973461130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ee18f3bbde84d53a6cacdac83ea48c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SecretMinigame
+--- !u!4 &973461132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973461130}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.3099, y: 0.38173, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1010495987
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -642,6 +686,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1097176895}
+    - targetCorrespondingSourceObject: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1097176924}
   m_SourcePrefab: {fileID: 100100000, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
 --- !u!1001 &1071445048
 PrefabInstance:
@@ -765,6 +812,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801c37d5e111a45448aa60665fa23154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+--- !u!114 &1097176924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 593540196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca33f96c08c4783ae3067855ad6fd95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerGrassTrail
+  poolSize: 25
+  spawnInterval: 0.07
+  minSpeed: 0.1
+  lifetime: 1
+  startSize: 0.35
+  endSize: 0
+  startColor: {r: 0.3, g: 0.75, b: 0.2, a: 1}
+  endColor: {r: 0.2, g: 0.55, b: 0.1, a: 0}
+  spawnOffset: {x: 0, y: -0.3}
+  spreadRadius: 0.18
+  launchSpeed: 1.2
+  gravity: 2.5
+  rotateSpeed: 200
+  sortingLayerName: Default
+  sortingOrder: 5
 --- !u!1 &1125838580
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,7 +875,7 @@ MonoBehaviour:
     canBeRotated: 1
     costs:
     - resourceType: Wood
-      amount: 5
+      amount: 3
   - displayName: Tower
     prefab: {fileID: 5880362381162859388, guid: d3b81ab9303a2a948a61fc6d9754a60f, type: 3}
     canBeRotated: 0
@@ -1053,11 +1127,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.442
+      value: -2.978
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.733
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1437,11 +1511,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.7086077
+      value: -2.994
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2688384
+      value: -0.94
       objectReference: {fileID: 0}
     - target: {fileID: 3351679994654823066, guid: 24e984c5a69c4204599187a5f9b1ad9a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1636,3 +1710,4 @@ SceneRoots:
   - {fileID: 214050353}
   - {fileID: 1863437907}
   - {fileID: 1390978806}
+  - {fileID: 973461132}

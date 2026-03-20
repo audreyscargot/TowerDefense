@@ -315,7 +315,7 @@ MonoBehaviour:
   moveSpeed: 1
   rotationSpeed: 0
   canAttack: 1
-  attackRange: 1
+  attackRange: 2
   layerMask:
     serializedVersion: 2
     m_Bits: 0

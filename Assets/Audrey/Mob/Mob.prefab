@@ -179,7 +179,7 @@ MonoBehaviour:
   hit: {fileID: 7500804485373309915}
   spriteRenderer: {fileID: 3885204940250874473}
   hitFlashColor: {r: 1, g: 0, b: 0, a: 0.7294118}
-  health: 2
+  health: 3
   damage: 1
   enemyLayerMask:
     serializedVersion: 2

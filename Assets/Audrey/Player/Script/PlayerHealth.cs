@@ -4,7 +4,7 @@ namespace Audrey.Player.Script
 {
     public class PlayerHealth : MonoBehaviour
     {
-        private string name;
+        private new string name;
         
         public float maxHealth;
         public float currentHealth;
@@ -54,7 +54,7 @@ namespace Audrey.Player.Script
             
             SaveAndLoad SV = gameObject.GetComponent<SaveAndLoad>();
             SV.SetDays(GM.Days);
-            SceneManager.LoadSceneAsync(1);
+            SceneManager.LoadSceneAsync(2);
             Debug.Log("DEAD");
         }
 
