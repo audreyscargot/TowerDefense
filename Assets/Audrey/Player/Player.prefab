@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 129963150980471431}
   - component: {fileID: 3113047958238253978}
   - component: {fileID: 1435427219959387741}
+  - component: {fileID: -5078638081206844042}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -290,6 +291,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 77c6a52f-f272-44bd-82b0-d153463af19c
     m_ActionName: 'Player/ScrollWheel[/Mouse/scroll/down,/Mouse/scroll/up]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f45c4e60-96ba-4b46-912b-ebeb1aad4fdc
+    m_ActionName: 'Player/ConsumeFood[/Keyboard/c]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -309,6 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   moveSpeed: 1
   rotationSpeed: 0
+  canAttack: 1
   attackRange: 1
   layerMask:
     serializedVersion: 2
@@ -828,3 +834,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-5078638081206844042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4182699795041694585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75bccf298994f64882bbddf25a14248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FoodConsumer
+  consumeFoodAction: {fileID: 4701258118519953048, guid: b81431a49df96b84da168f48d9f758f7, type: 3}

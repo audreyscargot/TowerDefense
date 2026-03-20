@@ -86,6 +86,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ConsumeFood",
+                    "type": "Button",
+                    "id": "f45c4e60-96ba-4b46-912b-ebeb1aad4fdc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -374,6 +383,17 @@
                     "action": "ScrollWheel",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "933baacc-cb61-4f3a-97af-4f3d7d9f1bb8",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ConsumeFood",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
