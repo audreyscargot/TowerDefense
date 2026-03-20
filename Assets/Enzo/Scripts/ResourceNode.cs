@@ -19,6 +19,8 @@ public class ResourceNode : MonoBehaviour
 
     private float currentHealth;
 
+    public AudioSource hit;
+
     private void Start()
     {
         currentHealth = maxHealth;
@@ -29,9 +31,9 @@ public class ResourceNode : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         if (!PlayerFood.Instance.canAction) return; //if not enough Food, player can't hit
-
-        FlashEffect();
+        
         currentHealth -= damageAmount;
+        hit.Play();
 
         if (spriteRenderer != null)
             StartCoroutine(FlashEffect());

@@ -109,6 +109,7 @@ MonoBehaviour:
   SpawnPrefab: {fileID: 6256672702632077042, guid: cb8bd43c0961ff3408fca38474bbe98b, type: 3}
   itemName: Food
   amount: 1
+  grab: {fileID: 8300000, guid: 8166fb5a57a14d941aa1d959f5f17c18, type: 3}
 --- !u!61 &5880155024412888
 BoxCollider2D:
   m_ObjectHideFlags: 0

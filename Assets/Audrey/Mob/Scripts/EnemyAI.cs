@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    public AudioSource hit;
+    
+    [Header("Visuals")]
+    public SpriteRenderer spriteRenderer;
+    public Color hitFlashColor = Color.red;
+    private Color originalColor;
+    
     [Header("Stats")]
     public float health = 100f;
     public float damage = 10f;
@@ -16,7 +23,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
 
     [Header("Timing")]
-    [SerializeField] private float attackCooldown = 1.0f;
+    [SerializeField] private float attackCooldown = 3.0f;
     [SerializeField] private float pathRefreshInterval = 0.4f;
 
     [Header("Targets")]
@@ -276,6 +283,11 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(float amount)
     {
         health -= amount;
+        hit.Play();
+        
+        if (spriteRenderer != null)
+            StartCoroutine(FlashEffect());
+        
         if (health <= 0f)
         {
             EnemySpawner.Instance?.EnemyDied();
@@ -289,5 +301,12 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, rangeOfSight);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, rangeOfAttack);
+    }
+    
+    private System.Collections.IEnumerator FlashEffect()
+    {
+        spriteRenderer.color = hitFlashColor;
+        yield return new WaitForSeconds(0.2f);
+        spriteRenderer.color = originalColor;
     }
 }

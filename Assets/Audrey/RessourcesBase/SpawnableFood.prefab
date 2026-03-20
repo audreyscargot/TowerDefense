@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodSpots
   IconOffset: {x: 0, y: 0}
-  SpawnPrefab: {fileID: 634115565453277484}
+  SpawnPrefab: {fileID: 6256672702632077042, guid: cb8bd43c0961ff3408fca38474bbe98b, type: 3}
   daysToGrow: 1
   plantDays:
   - {fileID: -4235080287930492418, guid: 540390061bb42534c8bf3960b45d748e, type: 3}

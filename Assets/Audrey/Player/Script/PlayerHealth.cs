@@ -9,6 +9,9 @@ namespace Audrey.Player.Script
         public float maxHealth;
         public float currentHealth;
         public GameObject GameManagerObj;
+
+        public AudioSource hit;
+        
         void Start()
         {
             name = gameObject.name;
@@ -31,6 +34,10 @@ namespace Audrey.Player.Script
 
         public virtual void ChangeHealth(float amount)
         {
+            if (amount < 0)
+            {
+                hit.Play();
+            }
             currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
             UpdateText(name);
             if (currentHealth <= 0)
