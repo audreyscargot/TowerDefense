@@ -1013,7 +1013,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::YSortManager
   sortingScale: 100
   baseOffset: 10000
-  alwaysOnTopOrder: 32000
   alwaysOnTopTags:
   - Player
   - Enemy
