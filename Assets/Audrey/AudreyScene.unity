@@ -1017,8 +1017,8 @@ MonoBehaviour:
   - Player
   - Enemy
   - Interact
-  excludedTags:
-  - YSortExclude
+  - Exclude
+  excludedTags: []
 --- !u!4 &1254427108
 Transform:
   m_ObjectHideFlags: 0

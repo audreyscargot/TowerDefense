@@ -13,7 +13,7 @@ public class TowerLevelData
     public RuntimeAnimatorController weaponAnimator;
 }
 
-public class Tower : MonoBehaviour
+public class Tower : MonoBehaviour, IUpgradePreview
 {
     [Header("Level Data")]
     public List<TowerLevelData> levels;
@@ -56,6 +56,15 @@ public class Tower : MonoBehaviour
         fireCooldown = 1f / fireRate;
         SetWeaponIdle();
     }
+
+    // ── IUpgradePreview ──────────────────────────────────
+    public string GetStatsAtLevel(int level)
+    {
+        if (levels == null || level >= levels.Count || level < 0) return "";
+        TowerLevelData d = levels[level];
+        return $"DMG  {d.damage}     Rate  {d.fireRate}/s     Range  {d.detectionRadius}";
+    }
+    // ────────────────────────────────────────────────────
 
     private void OnUpgraded(int newLevel)
     {
@@ -137,7 +146,11 @@ public class Tower : MonoBehaviour
             baseSpriteRenderer.sprite = data.baseSprite;
 
         if (weaponSpriteRenderer != null && data.weaponIdleSprite != null)
-            weaponSpriteRenderer.sprite = data.weaponIdleSprite;
+        {
+            weaponSpriteRenderer.sprite      = data.weaponIdleSprite;
+            weaponSpriteRenderer.sortingLayerID = baseSpriteRenderer.sortingLayerID;
+            weaponSpriteRenderer.sortingOrder   = baseSpriteRenderer.sortingOrder + 1;
+        }
 
         if (weaponAnimator != null && data.weaponAnimator != null)
         {

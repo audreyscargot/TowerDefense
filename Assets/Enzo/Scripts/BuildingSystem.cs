@@ -34,7 +34,7 @@ public class BuildingSystem : MonoBehaviour
     private BuildableItem currentSelection;
     private Vector2 currentMouseScreenPos;
     private Camera mainCam;
-    private bool tryBuildThisFrame = false;
+    private bool tryInteractThisFrame = false;
     private float currentRotationAngle = 0f;
 
     private List<GameObject> ghostBuildings = new List<GameObject>();
@@ -44,6 +44,7 @@ public class BuildingSystem : MonoBehaviour
     private GameObject generatedCanvas;
     private GameObject buildMenuPanel;
     private GameObject upgradePanel;
+    private Upgradeable currentUpgradeTarget = null;
 
     // ── Build Zone Overlay ───────────────────────────────────
     private GameObject buildZoneOverlay;
@@ -53,7 +54,6 @@ public class BuildingSystem : MonoBehaviour
         if (buildZoneOverlay != null) Destroy(buildZoneOverlay);
         buildZoneOverlay = new GameObject("BuildZoneOverlay");
 
-        // 4×4 white square texture — scaled to fit exactly one tile
         Texture2D tex = new Texture2D(4, 4) { filterMode = FilterMode.Point };
         Color[] px = new Color[16];
         for (int i = 0; i < 16; i++) px[i] = Color.white;
@@ -96,7 +96,7 @@ public class BuildingSystem : MonoBehaviour
 
     private void ShowBuildZoneOverlay()
     {
-        CreateBuildZoneOverlay(); // always rebuild so new obstacles are respected
+        CreateBuildZoneOverlay();
         buildZoneOverlay.SetActive(true);
     }
 
@@ -193,21 +193,27 @@ public class BuildingSystem : MonoBehaviour
 
     void Update()
     {
-        if (!isBuildingMode) return;
-
         if (pointerPositionAction != null)
             currentMouseScreenPos = pointerPositionAction.action.ReadValue<Vector2>();
 
-        HandlePreview();
+        if (isBuildingMode) HandlePreview();
 
-        if (tryBuildThisFrame)
-        {
-            tryBuildThisFrame = false;
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-            if (TrySelectBuildingAtMouse()) return;
-            if (currentSelection != null) PlaceGhostStructure();
-        }
+        if (!tryInteractThisFrame) return;
+        tryInteractThisFrame = false;
+
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+
+        // Always try to select a building first — upgrade works outside build mode
+        if (TrySelectBuildingAtMouse()) return;
+
+        // Only place buildings when in build mode with a selection active
+        if (isBuildingMode && currentSelection != null)
+            PlaceGhostStructure();
+        else
+            CloseUpgradePanel();
     }
+
+    // ── Upgrade Panel ────────────────────────────────────────
 
     private bool TrySelectBuildingAtMouse()
     {
@@ -216,8 +222,13 @@ public class BuildingSystem : MonoBehaviour
 
         if (hit != null)
         {
-            Upgradeable upgradeable = hit.GetComponent<Upgradeable>() ?? hit.GetComponentInParent<Upgradeable>();
-            if (upgradeable != null) { ShowUpgradePanel(upgradeable); return true; }
+            Upgradeable upgradeable = hit.GetComponent<Upgradeable>()
+                                   ?? hit.GetComponentInParent<Upgradeable>();
+            if (upgradeable != null)
+            {
+                ShowUpgradePanel(upgradeable);
+                return true;
+            }
         }
 
         CloseUpgradePanel();
@@ -226,63 +237,141 @@ public class BuildingSystem : MonoBehaviour
 
     private void ShowUpgradePanel(Upgradeable upgradeable)
     {
+        // Clicking the same building again closes the panel (toggle)
+        if (currentUpgradeTarget == upgradeable) { CloseUpgradePanel(); return; }
         CloseUpgradePanel();
+        currentUpgradeTarget = upgradeable;
 
         upgradePanel = new GameObject("UpgradePanel");
         upgradePanel.transform.SetParent(generatedCanvas.transform, false);
 
         Image bg = upgradePanel.AddComponent<Image>();
-        bg.color = new Color(0, 0, 0, 0.85f);
+        bg.color = new Color(0.1f, 0.1f, 0.1f, 0.92f);
+
         RectTransform rt = upgradePanel.GetComponent<RectTransform>();
-        rt.anchorMin = new Vector2(0.35f, 0.2f);
-        rt.anchorMax = new Vector2(0.65f, 0.45f);
-        rt.offsetMin = rt.offsetMax = Vector2.zero;
+        rt.sizeDelta = new Vector2(240, 0);
+        rt.pivot = new Vector2(0f, 0f);
+        rt.anchorMin = rt.anchorMax = new Vector2(0f, 0f);
+        PositionPanelNearBuilding(rt, upgradeable.transform.position);
 
-        VerticalLayoutGroup vLayout = upgradePanel.AddComponent<VerticalLayoutGroup>();
-        vLayout.childAlignment = TextAnchor.MiddleCenter;
-        vLayout.spacing = 8;
-        vLayout.padding = new RectOffset(10, 10, 10, 10);
-        vLayout.childControlWidth = true;
-        vLayout.childControlHeight = false;
+        ContentSizeFitter csf = upgradePanel.AddComponent<ContentSizeFitter>();
+        csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-        if (!upgradeable.canBeUpgraded || upgradeable.IsMaxLevel)
+        VerticalLayoutGroup vl = upgradePanel.AddComponent<VerticalLayoutGroup>();
+        vl.childAlignment = TextAnchor.MiddleCenter;
+        vl.spacing = 6;
+        vl.padding = new RectOffset(12, 12, 12, 12);
+        vl.childControlWidth = true;
+        vl.childControlHeight = false;
+        vl.childForceExpandWidth = true;
+
+        // ── Header ───────────────────────────────────────────
+        string buildingName = upgradeable.gameObject.name.Replace("(Clone)", "").Trim();
+        AddLabel(upgradePanel.transform, $"<b>{buildingName}</b>", 15, new Color(1f, 0.85f, 0.3f));
+        AddLabel(upgradePanel.transform, $"Level: {upgradeable.CurrentLevelName}", 12, Color.white);
+
+        AddSeparator(upgradePanel.transform);
+
+        // ── Stats comparison ─────────────────────────────────
+        IUpgradePreview preview = upgradeable.GetComponent<IUpgradePreview>();
+        if (preview != null)
         {
-            AddLabel(upgradePanel.transform, upgradeable.canBeUpgraded ? "MAX LEVEL" : "Cannot be upgraded");
+            string currentStats = preview.GetStatsAtLevel(upgradeable.CurrentLevel);
+            AddLabel(upgradePanel.transform, currentStats, 11, new Color(0.8f, 0.8f, 0.8f));
+
+            if (!upgradeable.IsMaxLevel && upgradeable.canBeUpgraded)
+            {
+                string nextStats = preview.GetStatsAtLevel(upgradeable.CurrentLevel + 1);
+                AddLabel(upgradePanel.transform, $"▲  {nextStats}", 11, new Color(0.4f, 1f, 0.4f));
+            }
+            AddSeparator(upgradePanel.transform);
+        }
+
+        // ── Status / cost ────────────────────────────────────
+        if (!upgradeable.canBeUpgraded)
+        {
+            AddLabel(upgradePanel.transform, "Cannot be upgraded", 12, new Color(1f, 0.4f, 0.4f));
+        }
+        else if (upgradeable.IsMaxLevel)
+        {
+            AddLabel(upgradePanel.transform, "✦ MAX LEVEL ✦", 13, new Color(1f, 0.85f, 0.3f));
         }
         else
         {
             List<ResourceCost> costs = upgradeable.GetNextUpgradeCost();
-            string costStr = string.Join(", ", costs.ConvertAll(c => $"{c.amount} {c.resourceType}"));
-            AddLabel(upgradePanel.transform, "Upgrade?");
-            AddLabel(upgradePanel.transform, $"Cost: {costStr}");
+            string costStr = string.Join("   ", costs.ConvertAll(c => $"{c.amount}× {c.resourceType}"));
+            AddLabel(upgradePanel.transform, $"→ {upgradeable.NextLevelName}", 12, new Color(0.4f, 0.8f, 1f));
+            AddLabel(upgradePanel.transform, $"Cost:  {costStr}", 12, Color.white);
+            AddSeparator(upgradePanel.transform);
 
-            DefaultControls.Resources res = new DefaultControls.Resources();
-            GameObject btnObj = DefaultControls.CreateButton(res);
-            btnObj.transform.SetParent(upgradePanel.transform, false);
-            btnObj.GetComponentInChildren<Text>().text = "Upgrade";
-            btnObj.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 30);
-            btnObj.GetComponent<Button>().onClick.AddListener(() => { TryUpgrade(upgradeable); CloseUpgradePanel(); });
+            bool canAfford = costs.TrueForAll(c => InventoryManager.Instance.HasItem(c.resourceType, c.amount));
+            GameObject btnObj = CreateStyledButton(upgradePanel.transform, "⬆ UPGRADE",
+                canAfford ? new Color(0.2f, 0.7f, 0.2f) : new Color(0.4f, 0.4f, 0.4f));
+
+            if (canAfford)
+                btnObj.GetComponent<Button>().onClick.AddListener(() => { TryUpgrade(upgradeable); CloseUpgradePanel(); });
+            else
+            {
+                btnObj.GetComponent<Button>().interactable = false;
+                AddLabel(upgradePanel.transform, "Not enough resources", 10, new Color(1f, 0.5f, 0.5f));
+            }
         }
 
-        DefaultControls.Resources res2 = new DefaultControls.Resources();
-        GameObject closeBtn = DefaultControls.CreateButton(res2);
-        closeBtn.transform.SetParent(upgradePanel.transform, false);
-        closeBtn.GetComponentInChildren<Text>().text = "Close";
-        closeBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 30);
-        closeBtn.GetComponent<Button>().onClick.AddListener(CloseUpgradePanel);
+        CreateStyledButton(upgradePanel.transform, "✕ Close", new Color(0.35f, 0.35f, 0.35f))
+            .GetComponent<Button>().onClick.AddListener(CloseUpgradePanel);
     }
 
-    private void AddLabel(Transform parent, string text)
+    private void PositionPanelNearBuilding(RectTransform panelRT, Vector3 worldPos)
+    {
+        Vector2 screenPos = mainCam.WorldToScreenPoint(worldPos);
+        RectTransform canvasRT = generatedCanvas.GetComponent<RectTransform>();
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRT, screenPos, null, out Vector2 localPos);
+
+        localPos += new Vector2(20f, 20f);
+        float halfW = canvasRT.sizeDelta.x * 0.5f;
+        float halfH = canvasRT.sizeDelta.y * 0.5f;
+        localPos.x = Mathf.Clamp(localPos.x, -halfW + 130f, halfW - 130f);
+        localPos.y = Mathf.Clamp(localPos.y, -halfH + 20f, halfH - 20f);
+
+        panelRT.anchoredPosition = localPos;
+    }
+
+    private GameObject CreateStyledButton(Transform parent, string label, Color bgColor)
+    {
+        DefaultControls.Resources res = new DefaultControls.Resources();
+        GameObject btn = DefaultControls.CreateButton(res);
+        btn.transform.SetParent(parent, false);
+
+        Text t = btn.GetComponentInChildren<Text>();
+        t.text = label;
+        t.font = upgradeUIFont != null ? upgradeUIFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+
+        btn.GetComponent<Image>().color = bgColor;
+        btn.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 28);
+        return btn;
+    }
+
+    private void AddSeparator(Transform parent)
+    {
+        GameObject sep = new GameObject("Sep");
+        sep.transform.SetParent(parent, false);
+        sep.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.15f);
+        sep.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 1);
+    }
+
+    private void AddLabel(Transform parent, string text, int fontSize = 14, Color? color = null)
     {
         GameObject obj = new GameObject("Label");
         obj.transform.SetParent(parent, false);
         Text label = obj.AddComponent<Text>();
         label.text = text;
-        label.color = Color.white;
+        label.color = color ?? Color.white;
         label.alignment = TextAnchor.MiddleCenter;
-        label.fontSize = 14;
+        label.fontSize = fontSize;
+        label.supportRichText = true;
         label.font = upgradeUIFont != null ? upgradeUIFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        obj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 25);
+        obj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, fontSize + 8);
     }
 
     private void TryUpgrade(Upgradeable upgradeable)
@@ -308,7 +397,10 @@ public class BuildingSystem : MonoBehaviour
     private void CloseUpgradePanel()
     {
         if (upgradePanel != null) { Destroy(upgradePanel); upgradePanel = null; }
+        currentUpgradeTarget = null;
     }
+
+    // ── Input ────────────────────────────────────────────────
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
     {
@@ -323,7 +415,7 @@ public class BuildingSystem : MonoBehaviour
 
     private void OnLeftClick(InputAction.CallbackContext context)
     {
-        if (isBuildingMode && currentSelection != null) tryBuildThisFrame = true;
+        tryInteractThisFrame = true;
     }
 
     private void OnRotate(InputAction.CallbackContext context)
@@ -333,6 +425,8 @@ public class BuildingSystem : MonoBehaviour
         currentRotationAngle -= 90f;
         if (currentRotationAngle <= -360f) currentRotationAngle = 0f;
     }
+
+    // ── Build Mode ───────────────────────────────────────────
 
     private void EnterBuildMode()
     {
@@ -402,6 +496,8 @@ public class BuildingSystem : MonoBehaviour
         DestroyPreviewObject();
         CreatePreviewObject();
     }
+
+    // ── Preview & Placement ──────────────────────────────────
 
     private void CreatePreviewObject()
     {
@@ -479,6 +575,8 @@ public class BuildingSystem : MonoBehaviour
         ghostBuildings.Clear();
         ghostBuildingData.Clear();
     }
+
+    // ── Grid & Placement Validation ──────────────────────────
 
     private Vector2 GetMouseGridPosition()
     {
