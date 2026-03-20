@@ -407,8 +407,16 @@ public class BuildingSystem : MonoBehaviour
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
     {
-        if (isBuildingMode) ConfirmAndExitBuildMode();
-        else EnterBuildMode();
+        if (isBuildingMode)
+        {
+            ConfirmAndExitBuildMode();
+            playerMovement.canAttack = true;
+        }
+        else
+        {
+            EnterBuildMode();
+            playerMovement.canAttack = false;
+        }
     }
 
     private void OnRightClick(InputAction.CallbackContext context)

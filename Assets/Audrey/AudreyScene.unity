@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPrefab: {fileID: 4774824240265195293, guid: d59112846ef0af44db876fde85d37bcc, type: 3}
-  baseEnemiesPerNight: 30
+  baseEnemiesPerNight: 5
   timeBetweenSpawns: 1
   spawnPointCount: 30
   resourceClearRadius: 5
@@ -799,19 +799,23 @@ MonoBehaviour:
   - displayName: Barrier
     prefab: {fileID: 6155763099139222675, guid: 3ebc22007c8e2754caa04ae270542fc1, type: 3}
     canBeRotated: 1
-    costs: []
+    costs:
+    - resourceType: Wood
+      amount: 5
   - displayName: Tower
     prefab: {fileID: 5880362381162859388, guid: d3b81ab9303a2a948a61fc6d9754a60f, type: 3}
     canBeRotated: 0
     costs:
     - resourceType: Wood
-      amount: 1
+      amount: 15
     - resourceType: Stone
-      amount: 1
+      amount: 10
   - displayName: Plant
     prefab: {fileID: 634115565453277484, guid: 8f03fd0e2b9898348a60174c1779bc59, type: 3}
     canBeRotated: 0
-    costs: []
+    costs:
+    - resourceType: Food
+      amount: 1
   unbuildableLayer:
     serializedVersion: 2
     m_Bits: 256
