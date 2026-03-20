@@ -19,6 +19,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float attackCooldown = 1.0f;
     [SerializeField] private float pathRefreshInterval = 0.4f;
 
+    [Header("Targets")]
+    public LayerMask baseLayerMask;
+
     private Transform playerTransform;
     private GameObject base_;
     private GameObject currentTarget;
@@ -40,10 +43,13 @@ public class EnemyAI : MonoBehaviour
 
         GameObject playerObj = GameObject.Find("Player");
         if (playerObj != null) playerTransform = playerObj.transform;
-        base_ = GameObject.Find("Base");
+
+        Collider2D baseCol = Physics2D.OverlapCircle(Vector2.zero, 9999f, baseLayerMask);
+        if (baseCol != null) base_ = baseCol.gameObject;
 
         TransitionTo(State.GoToBase);
     }
+
 
     private void Update()
     {
@@ -51,10 +57,10 @@ public class EnemyAI : MonoBehaviour
 
         switch (state)
         {
-            case State.GoToBase:        UpdateGoToBase();       break;
-            case State.ChasePlayer:     UpdateChasePlayer();    break;
-            case State.AttackBuilding:  UpdateAttackBuilding(); break;
-            case State.AttackPlayer:    UpdateAttackPlayer();   break;
+            case State.GoToBase:       UpdateGoToBase();       break;
+            case State.ChasePlayer:    UpdateChasePlayer();    break;
+            case State.AttackBuilding: UpdateAttackBuilding(); break;
+            case State.AttackPlayer:   UpdateAttackPlayer();   break;
         }
     }
 
@@ -72,20 +78,28 @@ public class EnemyAI : MonoBehaviour
 
     private void UpdateGoToBase()
     {
+        GameObject blocker = GetBlockingBuilding(base_);
+
+        if (blocker != null)
+        {
+            if (IsInAttackRange(blocker)) { TransitionTo(State.AttackBuilding, blocker); return; }
+
+            if (pathRefreshTimer <= 0f)
+            {
+                pathRefreshTimer = pathRefreshInterval;
+                RequestPath(blocker);
+            }
+            return;
+        }
+
+        if (IsInAttackRange(base_)) { TransitionTo(State.AttackBuilding, base_); return; }
+
         if (CanSeePlayer()) { TransitionTo(State.ChasePlayer); return; }
 
-        // Pick target: blocker if path is blocked, otherwise base
-        GameObject blocker = GetBlockingBuilding(base_);
-        GameObject actualTarget = blocker != null ? blocker : base_;
-
-        // Only enter attack state when we're actually close enough
-        if (IsInAttackRange(actualTarget)) { TransitionTo(State.AttackBuilding, actualTarget); return; }
-
-        // Otherwise keep pathing toward the target
         if (pathRefreshTimer <= 0f)
         {
             pathRefreshTimer = pathRefreshInterval;
-            RequestPath(actualTarget);
+            RequestPath(base_);
         }
     }
 
@@ -97,7 +111,6 @@ public class EnemyAI : MonoBehaviour
 
         if (blocker != null)
         {
-            // Building blocking path to player — walk to it first
             if (IsInAttackRange(blocker)) { TransitionTo(State.AttackBuilding, blocker); return; }
 
             if (pathRefreshTimer <= 0f)
@@ -108,7 +121,6 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // Clear path to player
         if (IsInAttackRange(playerTransform.gameObject)) { TransitionTo(State.AttackPlayer); return; }
 
         if (pathRefreshTimer <= 0f)
@@ -124,8 +136,7 @@ public class EnemyAI : MonoBehaviour
 
         if (!IsInAttackRange(currentTarget))
         {
-            // Target destroyed or we drifted — re-evaluate
-            TransitionTo(CanSeePlayer() ? State.ChasePlayer : State.GoToBase);
+            TransitionTo(State.GoToBase);
             return;
         }
 
@@ -135,13 +146,10 @@ public class EnemyAI : MonoBehaviour
     private void UpdateAttackPlayer()
     {
         if (playerTransform == null || !CanSeePlayer()) { TransitionTo(State.GoToBase); return; }
-
         if (!IsInAttackRange(playerTransform.gameObject)) { TransitionTo(State.ChasePlayer); return; }
-
         Attack();
     }
 
-    // ── Pathfinding ──────────────────────────────────────────
 
     private void RequestPath(GameObject target)
     {
@@ -156,7 +164,6 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            // Fallback: walk directly if no path found
             currentPath = new List<Vector2> { target.transform.position };
             pathIndex = 0;
         }
@@ -171,11 +178,9 @@ public class EnemyAI : MonoBehaviour
         }
 
         Vector2 target = currentPath[pathIndex];
-        Vector2 dir = (target - (Vector2)transform.position).normalized;
-
         if (Vector2.Distance(transform.position, target) < 0.1f) { pathIndex++; return; }
 
-        rb.linearVelocity = dir * moveSpeed;
+        rb.linearVelocity = (target - (Vector2)transform.position).normalized * moveSpeed;
     }
 
     // ── Helpers ──────────────────────────────────────────────
@@ -222,6 +227,10 @@ public class EnemyAI : MonoBehaviour
 
         if (hit.collider == null) return null;
 
+        // Don't treat the target itself as a blocker
+        if (hit.collider.gameObject == target ||
+            hit.collider.transform.IsChildOf(target.transform)) return null;
+
         BuildingHealth bh = hit.collider.GetComponent<BuildingHealth>()
                          ?? hit.collider.GetComponentInParent<BuildingHealth>()
                          ?? hit.collider.GetComponentInChildren<BuildingHealth>();
@@ -240,19 +249,27 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            Collider2D buildingCol = Physics2D.OverlapCircle(transform.position, rangeOfAttack, buildingLayerMask);
-            if (buildingCol != null)
+            BuildingHealth bh = currentTarget.GetComponent<BuildingHealth>()
+                                ?? currentTarget.GetComponentInParent<BuildingHealth>()
+                                ?? currentTarget.GetComponentInChildren<BuildingHealth>();
+
+            if (bh != null)
             {
-                BuildingHealth bh = buildingCol.GetComponent<BuildingHealth>()
-                                 ?? buildingCol.GetComponentInParent<BuildingHealth>()
-                                 ?? buildingCol.GetComponentInChildren<BuildingHealth>();
-                bh?.TakeDamage(damage);
+                bh.TakeDamage(damage);
+            }
+            else
+            {
+                PlayerHealth ph = currentTarget.GetComponent<PlayerHealth>()
+                                  ?? currentTarget.GetComponentInParent<PlayerHealth>()
+                                  ?? currentTarget.GetComponentInChildren<PlayerHealth>();
+                ph?.ChangeHealth(-damage);
             }
         }
 
         canAttack = false;
         Invoke(nameof(ResetAttack), attackCooldown);
     }
+
 
     private void ResetAttack() => canAttack = true;
 

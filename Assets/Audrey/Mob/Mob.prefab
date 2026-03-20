@@ -188,6 +188,9 @@ MonoBehaviour:
   moveSpeed: 3
   attackCooldown: 1
   pathRefreshInterval: 0.4
+  baseLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!50 &-5624981444934763626
 Rigidbody2D:
   serializedVersion: 5
