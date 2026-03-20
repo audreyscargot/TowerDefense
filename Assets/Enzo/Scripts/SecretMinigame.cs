@@ -74,8 +74,8 @@ public class SecretMinigame : MonoBehaviour
     {
         if (!gameRunning) return;
 
-        timeLeft -= Time.deltaTime;
-        timerLabel.text = $"⏱ {Mathf.CeilToInt(timeLeft)}s";
+        timeLeft -= Time.unscaledDeltaTime;
+        timerLabel.text = $"{Mathf.CeilToInt(timeLeft)}s";
 
         if (timeLeft <= 0f) { EndGame(true); return; }
 
@@ -105,7 +105,7 @@ public class SecretMinigame : MonoBehaviour
             rt.anchoredPosition = Vector2.MoveTowards(
                 rt.anchoredPosition,
                 Vector2.zero,
-                ENEMY_SPEED * Time.deltaTime
+                ENEMY_SPEED * Time.unscaledDeltaTime
             );
 
             if (rt.anchoredPosition.magnitude < 18f)
@@ -122,13 +122,14 @@ public class SecretMinigame : MonoBehaviour
     // ── Game lifecycle ────────────────────────────────────────
     private IEnumerator LaunchGame()
     {
+        Time.timeScale = 0f;
         BuildUI();
         yield return StartCoroutine(ShowCountdown());
 
-        gameRunning = true;
-        score       = 0;
-        lives       = MAX_LIVES;
-        timeLeft    = GAME_DURATION;
+        gameRunning     = true;
+        score           = 0;
+        lives           = MAX_LIVES;
+        timeLeft        = GAME_DURATION;
         scoreLabel.text = "Score: 0";
         livesLabel.text = BuildLives();
         titleLabel.gameObject.SetActive(false);
@@ -143,10 +144,10 @@ public class SecretMinigame : MonoBehaviour
         {
             titleLabel.text     = i.ToString();
             titleLabel.fontSize = 90;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSecondsRealtime(1f);
         }
         titleLabel.text = "GO!";
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSecondsRealtime(0.6f);
     }
 
     private IEnumerator SpawnLoop()
@@ -154,7 +155,7 @@ public class SecretMinigame : MonoBehaviour
         while (gameRunning)
         {
             SpawnEnemy();
-            yield return new WaitForSeconds(SPAWN_INTERVAL);
+            yield return new WaitForSecondsRealtime(SPAWN_INTERVAL);
         }
     }
 
@@ -187,7 +188,8 @@ public class SecretMinigame : MonoBehaviour
 
     private IEnumerator CloseAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(delay);
+        Time.timeScale = 1f;
         if (rootCanvas != null) Destroy(rootCanvas);
     }
 
@@ -314,9 +316,6 @@ public class SecretMinigame : MonoBehaviour
 
     private string BuildLives()
     {
-        string s = "";
-        for (int i = 0; i < MAX_LIVES; i++)
-            s += i < lives ? "♥ " : "♡ ";
-        return s.TrimEnd();
+        return $"Lives: {lives}/{MAX_LIVES}";
     }
 }
