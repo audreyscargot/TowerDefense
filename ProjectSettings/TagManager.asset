@@ -9,6 +9,7 @@ TagManager:
   - Barrier
   - Enemy
   - Interact
+  - Exclude
   layers:
   - Default
   - TransparentFX

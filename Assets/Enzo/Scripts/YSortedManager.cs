@@ -12,6 +12,9 @@ public class YSortManager : MonoBehaviour
     [Header("Always On Top Tags")]
     public List<string> alwaysOnTopTags = new List<string> { "Player", "Enemy" };
 
+    [Header("Excluded Tags (never touched by YSort)")]
+    public List<string> excludedTags = new List<string> { "YSortExclude" };
+
     private List<SpriteRenderer> trackedRenderers = new List<SpriteRenderer>();
     private float refreshTimer = 0f;
 
@@ -33,6 +36,7 @@ public class YSortManager : MonoBehaviour
         foreach (SpriteRenderer sr in trackedRenderers)
         {
             if (sr == null) continue;
+            if (HasExcludedTag(sr.transform)) continue; 
 
             if (HasAlwaysOnTopTag(sr.transform))
                 sr.sortingOrder = alwaysOnTopOrder;
@@ -46,6 +50,16 @@ public class YSortManager : MonoBehaviour
         while (t != null)
         {
             if (alwaysOnTopTags.Contains(t.gameObject.tag)) return true;
+            t = t.parent;
+        }
+        return false;
+    }
+
+    private bool HasExcludedTag(Transform t)
+    {
+        while (t != null)
+        {
+            if (excludedTags.Contains(t.gameObject.tag)) return true;
             t = t.parent;
         }
         return false;
