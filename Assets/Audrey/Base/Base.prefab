@@ -112,6 +112,7 @@ MonoBehaviour:
   currentHealth: 0
   GameManagerObj: {fileID: 0}
   hit: {fileID: 7256974607155505031}
+  heal: {fileID: 7256974607155505031}
 --- !u!61 &-3250091958673171396
 BoxCollider2D:
   m_ObjectHideFlags: 0

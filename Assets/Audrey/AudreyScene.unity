@@ -499,10 +499,14 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 3113047958238253978, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 708793291}
     - target: {fileID: 3905731002155939807, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: food
       value: 
-      objectReference: {fileID: 1097176905}
+      objectReference: {fileID: 1097176907}
     - target: {fileID: 3905731002155939807, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       propertyPath: weapon
       value: 
@@ -638,9 +642,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1097176895}
-    - targetCorrespondingSourceObject: {fileID: 4182699795041694585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1097176905}
   m_SourcePrefab: {fileID: 100100000, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
 --- !u!1001 &1071445048
 PrefabInstance:
@@ -737,11 +738,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1097176905
+--- !u!82 &1097176906 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1296780609566843585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
+  m_PrefabInstance: {fileID: 1010495987}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1097176907 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 3113047958238253978, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
+  m_PrefabInstance: {fileID: 1010495987}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 593540196}
   m_Enabled: 1
@@ -749,15 +754,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b81c281965eb75b4fbef38de6b099be1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFood
-  canAction: 1
-  maxFood: 10
-  currentFood: 0
-  inventory: {fileID: 708793291}
---- !u!82 &1097176906 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 1296780609566843585, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
+--- !u!114 &1097176911 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9222122608650630997, guid: 11af42a13e5b1754fb6fbe3af6fdd1ee, type: 3}
   m_PrefabInstance: {fileID: 1010495987}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 593540196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 801c37d5e111a45448aa60665fa23154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
 --- !u!1 &1125838580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,6 +1018,8 @@ MonoBehaviour:
   - Player
   - Enemy
   - Interact
+  excludedTags:
+  - YSortExclude
 --- !u!4 &1254427108
 Transform:
   m_ObjectHideFlags: 0
@@ -1309,7 +1318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   uiDocument: {fileID: 1436947085}
-  playerHealth: {fileID: 0}
+  playerHealth: {fileID: 1097176911}
   baseHealth: {fileID: 0}
 --- !u!1 &1683661398
 GameObject:

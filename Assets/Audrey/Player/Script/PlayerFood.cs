@@ -9,7 +9,8 @@ public class PlayerFood : MonoBehaviour
     
     [SerializeField] private int maxFood;
     public int currentFood;
-    
+
+    public AudioSource heal;
 
     public InventoryManager inventory;
     
@@ -50,6 +51,7 @@ public class PlayerFood : MonoBehaviour
         {
             if (currentFood < maxFood)
             {
+                heal.Play();
                 ChangeFood(1);
                 inventory.RemoveItem("Food",1);
             }

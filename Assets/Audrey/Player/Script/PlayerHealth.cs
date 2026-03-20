@@ -11,6 +11,7 @@ namespace Audrey.Player.Script
         public GameObject GameManagerObj;
 
         public AudioSource hit;
+        public AudioSource heal;
         
         void Start()
         {
@@ -59,6 +60,7 @@ namespace Audrey.Player.Script
 
         void Heal()
         {
+            heal.Play();
             currentHealth = maxHealth;
             UpdateText(name);
         }
