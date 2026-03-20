@@ -6,8 +6,7 @@ public class YSortManager : MonoBehaviour
 {
     [Header("Settings")]
     public float sortingScale = 100f;
-    public int baseOffset = 10000;
-    public int alwaysOnTopOrder = 32000;
+    public int baseOffset = 5000;       
 
     [Header("Always On Top Tags")]
     public List<string> alwaysOnTopTags = new List<string> { "Player", "Enemy" };
@@ -17,6 +16,10 @@ public class YSortManager : MonoBehaviour
 
     private List<SpriteRenderer> trackedRenderers = new List<SpriteRenderer>();
     private float refreshTimer = 0f;
+
+    private const int MIN_ORDER = -30000;
+    private const int MAX_ORDER =  30000;
+    private const int ALWAYS_ON_TOP = 30500; 
 
     private void LateUpdate()
     {
@@ -36,12 +39,18 @@ public class YSortManager : MonoBehaviour
         foreach (SpriteRenderer sr in trackedRenderers)
         {
             if (sr == null) continue;
-            if (HasExcludedTag(sr.transform)) continue; 
+            if (HasExcludedTag(sr.transform)) continue;
 
             if (HasAlwaysOnTopTag(sr.transform))
-                sr.sortingOrder = alwaysOnTopOrder;
+            {
+                sr.sortingOrder = ALWAYS_ON_TOP;
+            }
             else
-                sr.sortingOrder = baseOffset - Mathf.RoundToInt(sr.transform.position.y * sortingScale);
+            {
+                int order = baseOffset - Mathf.RoundToInt(sr.transform.position.y * sortingScale);
+                // Clamp so it can never overflow or collide with ALWAYS_ON_TOP
+                sr.sortingOrder = Mathf.Clamp(order, MIN_ORDER, MAX_ORDER);
+            }
         }
     }
 
