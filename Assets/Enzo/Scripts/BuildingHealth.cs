@@ -2,6 +2,9 @@
 
 public class BuildingHealth : MonoBehaviour
 {
+
+    public AudioSource hit;
+    
     [Header("Stats")]
     public float maxHealth = 50f;
 
@@ -63,6 +66,8 @@ public class BuildingHealth : MonoBehaviour
 
         healthBarGO.SetActive(true);
         UpdateHealthBar();
+        
+        if(hit) hit.Play(); //Audio when hit
 
         if (hideCoroutine != null) StopCoroutine(hideCoroutine);
 
@@ -80,4 +85,5 @@ public class BuildingHealth : MonoBehaviour
         yield return new WaitForSeconds(healthBarHideDelay);
         if (healthBarGO != null) healthBarGO.SetActive(false);
     }
+    
 }

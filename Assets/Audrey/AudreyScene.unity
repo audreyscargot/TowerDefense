@@ -794,6 +794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3946936ae33bc4eb8ff03584dacf21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem
+  playerMovement: {fileID: 1097176884}
   availableBuildings:
   - displayName: Barrier
     prefab: {fileID: 6155763099139222675, guid: 3ebc22007c8e2754caa04ae270542fc1, type: 3}

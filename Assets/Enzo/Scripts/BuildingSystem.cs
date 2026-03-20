@@ -7,6 +7,8 @@ using UnityEngine.Tilemaps;
 
 public class BuildingSystem : MonoBehaviour
 {
+    public PlayerMovement playerMovement;
+    
     [Header("List of Buildings")]
     public List<BuildableItem> availableBuildings;
 
@@ -180,6 +182,7 @@ public class BuildingSystem : MonoBehaviour
         if (rightClickAction != null) { rightClickAction.action.Enable(); rightClickAction.action.performed += OnRightClick; }
         if (pointerPositionAction != null) { pointerPositionAction.action.Enable(); }
         if (rotateAction != null) { rotateAction.action.Enable(); rotateAction.action.performed += OnRotate; }
+        
     }
 
     void OnDisable()
@@ -467,6 +470,7 @@ public class BuildingSystem : MonoBehaviour
             foreach (var ghost in ghostBuildings)
             {
                 ghost.GetComponent<SpriteRenderer>().color = Color.white;
+                if (ghost.GetComponent<AudioSource>()) ghost.GetComponent<AudioSource>().Play(); //Audio played when build
                 foreach (Collider2D col in ghost.GetComponentsInChildren<Collider2D>())
                     col.enabled = true;
 

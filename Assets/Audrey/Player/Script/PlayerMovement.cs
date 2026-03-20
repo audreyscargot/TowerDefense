@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     
     //Attack related variables
-    private bool canAttack = true;
+    public bool canAttack = true;
     [SerializeField] private float attackRange = 2.0f;
     public LayerMask layerMask;
 
@@ -103,7 +103,6 @@ public class PlayerMovement : MonoBehaviour
             Vector2 newTemp = new Vector2(transform.position.x, transform.position.y);
             CapsuleDirection2D dirTemp = new CapsuleDirection2D();
             RaycastHit2D hit = Physics2D.Linecast(transform.position, mouseWorldPos, layerMask);
-            // RaycastHit2D hit = Physics2D.CapsuleCast(newTemp, new Vector2(0.5f, attackRange), dirTemp ,90, mouseWorldPos,attackRange, layerMask);
             
             // calcul distance between player to mouseworldpos
             if (hit.collider != null)
@@ -144,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
             Gizmos.DrawSphere(transform.position, 0.1f);
         }
     }
-
+    
     void ResetAttack()
     {
         canAttack = true;
