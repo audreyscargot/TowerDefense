@@ -6,6 +6,9 @@ using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+    void Awake() { Instance = this; }
+
     // Events
     public static Action OnNightStarted;
     public static Action OnDayStarted;

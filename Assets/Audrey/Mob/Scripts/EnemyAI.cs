@@ -41,13 +41,17 @@ public class EnemyAI : MonoBehaviour
 
     private enum State { GoToBase, ChasePlayer, AttackBuilding, AttackPlayer }
     private State state = State.GoToBase;
+    private bool isDead = false;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-
+        
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color; 
+        
         GameObject playerObj = GameObject.Find("Player");
         if (playerObj != null) playerTransform = playerObj.transform;
 
@@ -279,22 +283,53 @@ public class EnemyAI : MonoBehaviour
 
 
     private void ResetAttack() => canAttack = true;
-
+    
     public void TakeDamage(float amount)
     {
+        if (isDead) return;  // ← ignore any damage after death is triggered
+
         health -= amount;
         hit.Play();
-        
-        if (spriteRenderer != null)
-            StartCoroutine(FlashEffect());
-        
+        if (spriteRenderer != null) StartCoroutine(FlashEffect());
+
         if (health <= 0f)
         {
+            isDead = true;   // ← lock immediately so no second call gets through
+            SpawnDeathParticles();
             EnemySpawner.Instance?.EnemyDied();
             Destroy(gameObject);
         }
     }
 
+    private void SpawnDeathParticles()
+    {
+        Texture2D tex = new Texture2D(4, 4) { filterMode = FilterMode.Point };
+        Color[] px = new Color[16];
+        for (int i = 0; i < 16; i++) px[i] = Color.white;
+        tex.SetPixels(px);
+        tex.Apply();
+        Sprite sq = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 16f);
+
+        Color burstColor = hitFlashColor;
+
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject p = new GameObject("DeathParticle");
+            p.transform.position = transform.position;
+            p.transform.localScale = Vector3.one * Random.Range(0.15f, 0.35f);
+
+            SpriteRenderer sr = p.AddComponent<SpriteRenderer>();
+            sr.sprite = sq;
+            sr.color = burstColor;
+            sr.sortingOrder = 200000;
+
+            Vector2 dir = Random.insideUnitCircle.normalized;
+            float speed = Random.Range(1.8f, 3.5f);
+            float life  = Random.Range(0.3f, 0.5f);
+
+            p.AddComponent<DeathParticle>().Init(dir * speed, life, burstColor);
+        }
+    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

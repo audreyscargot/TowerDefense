@@ -5,6 +5,7 @@ public class BuildingSystemBarrier : MonoBehaviour, IRotatableBuilding
     [Header("Barrier Settings")]
     public float maxHealth = 50f;
     private float currentHealth;
+    private Color originalColor; 
 
     [Header("Rotation Sprites")]
     public Sprite horizontalSprite;
@@ -24,8 +25,9 @@ public class BuildingSystemBarrier : MonoBehaviour, IRotatableBuilding
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        currentHealth = maxHealth; 
         sr = GetComponent<SpriteRenderer>();
+        if (sr != null) originalColor = sr.color; 
     }
 
     public void ApplyRotationSprite(float rotationAngle)
@@ -48,7 +50,7 @@ public class BuildingSystemBarrier : MonoBehaviour, IRotatableBuilding
     {
         currentHealth -= amount;
         sr.color = Color.red;
-        Invoke("ResetColor", 0.1f);
+        Invoke(nameof(ResetColor), 0.1f);
 
         if (currentHealth <= 0)
             Destroy(gameObject);
@@ -56,6 +58,6 @@ public class BuildingSystemBarrier : MonoBehaviour, IRotatableBuilding
 
     private void ResetColor()
     {
-        sr.color = Color.white;
+        if (sr != null) sr.color = originalColor;
     }
 }
