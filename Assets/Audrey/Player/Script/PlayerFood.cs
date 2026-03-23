@@ -7,7 +7,7 @@ public class PlayerFood : MonoBehaviour
     
     public bool canAction = true;
     
-    [SerializeField] private int maxFood;
+    [SerializeField] private int maxFood = 10;
     public int currentFood;
 
     public AudioSource heal;
@@ -61,6 +61,8 @@ public class PlayerFood : MonoBehaviour
     void ResetFood()
     {
         currentFood = maxFood;
+        UIManager.Instance.UpdateText("Energy");
+        InventoryManager.Instance.AddItem("Food",2);
     }
     
 }
